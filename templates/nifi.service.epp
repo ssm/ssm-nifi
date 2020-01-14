@@ -1,0 +1,27 @@
+<%- |
+    Integer[0] $limit_nofile,
+    Integer[0] $limit_nproc,
+    String $user,
+    Stdlib::Absolutepath $nifi_home,
+    | -%>
+[Unit]
+Description=Apache NiFi
+
+[Service]
+Type=forking
+ExecStart=<%= $nifi_home %>/bin/nifi.sh start
+ExecStop=<%= $nifi_home %>/bin/nifi.sh stop
+GuessMainPID=yes
+User=<%= $user %>
+LimitNOFILE=<%= $limit_nofile %>
+LimitNPROC=<%= $limit_nproc %>
+
+NoNewPrivileges=yes
+PrivateDevices=yes
+PrivateTmp=yes
+PrivateUsers=yes
+ProtectHome=tmpfs
+ProtectSystem=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,1 +1,9 @@
 ---
+nifi::downloads:
+  "1.10.0":
+    nifi:
+      url: "https://www-eu.apache.org/dist/nifi/1.10.0/nifi-1.10.0-bin.tar.gz"
+      sha256sum: "fd4f0750d18137bb1c21cd0fd5ab8951ccd450e6f673b8988db93ea2ff408288"
+    nifi-toolkit:
+      url: "https://www-eu.apache.org/dist/nifi/1.10.0/nifi-toolkit-1.10.0-bin.tar.gz"
+      sha256sum: "cdea77679a6b6198a60f5b89d6d97783398b48b8d02b513b081f2456f8949ad5"

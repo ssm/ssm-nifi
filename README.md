@@ -1,9 +1,5 @@
 # nifi
 
-Welcome to your new module. A short overview of the generated parts can be found in the PDK documentation at https://puppet.com/pdk/latest/pdk_generating_modules.html .
-
-The README template below provides a starting point with details about what information to include in your README.
-
 #### Table of Contents
 
 1. [Description](#description)
@@ -17,27 +13,39 @@ The README template below provides a starting point with details about what info
 
 ## Description
 
-Briefly tell users why they might want to use your module. Explain what your module does and what kind of problems users can solve with it.
-
-This should be a fairly short description helps the user decide if your module is what they want.
+Install and configure the [Apache NiFi](https://nifi.apache.org/)
+dataflow automation software.
 
 ## Setup
 
-### What nifi affects **OPTIONAL**
+### What nifi affects
 
-If it's obvious what your module touches, you can skip this section. For example, folks can probably figure out that your mysql_instance module affects their MySQL instances.
+This module will download the Apache NiFi tarball to `/var/tmp/`, and
+will require about 1.5 GiB. Please make sure you have space for this
+file.
 
-If there's more that they should know about, though, this is the place to mention:
+The tarball will be unpacked to `/opt/nifi`, where it will require
+about the same space.
 
-* Files, packages, services, or operations that the module will alter, impact, or execute.
-* Dependencies that your module automatically installs.
-* Warnings or other important notices.
+The configuration will be installed in `/etc/opt/nifi`, and
+repositories under `/var/opt/nifi`.
 
-### Setup Requirements **OPTIONAL**
+### Setup Requirements
 
-If your module requires anything extra before setting up (pluginsync enabled, another module, etc.), mention it here.
+NiFi requires Java Runtime Environment. Nifi 1.10.1 runs on Java 8 or
+Java 11.
 
-If your most recent release breaks compatibility or requires particular steps for upgrading, you might want to include an additional "Upgrading" section here.
+NiFi requires ~ 1.3 GiB download, temporary storage and unpacked
+storage. Ensure `/opt/nifi` and `/var/tmp` has room for the downloaded
+and unpacked software. Also ensure `/var/opt/nifi` has room for your
+repositories.
+
+When installing on local infrastructure, consider download the
+distribution tarballs, validate them with the Apache distribution
+keys, and store it on a local repository. Adjust the `nifi::download`
+configuration variables to point to your local repository. The [NiFi
+download page](https://nifi.apache.org/download.html) also documents
+how to verify the integrity and authenticity of the downloaded files.
 
 ### Beginning with nifi
 

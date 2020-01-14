@@ -1,10 +1,12 @@
 {
   "name": "ssm-nifi",
   "version": "0.1.0",
-  "author": "Stig Sandbeck Mathisen",
-  "summary": "",
+  "author": "ssm",
+  "summary": "Install and configure Apache NiFi",
   "license": "Apache-2.0",
-  "source": "",
+  "source": "https://github.com/ssm/ssm-nifi.git",
+  "project_page": "https://github.com/ssm/ssm-nifi",
+  "issues_url": "https://github.com/ssm/ssm-nifi/issues",
   "dependencies": [
 
   ],
@@ -12,31 +14,19 @@
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "7"
-      ]
-    },
-    {
-      "operatingsystem": "OracleLinux",
-      "operatingsystemrelease": [
-        "7"
+        "7","8"
       ]
     },
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "8"
-      ]
-    },
-    {
-      "operatingsystem": "Scientific",
-      "operatingsystemrelease": [
-        "7"
+        "7","8"
       ]
     },
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "9"
+        "9","10"
       ]
     },
     {

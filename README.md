@@ -20,15 +20,11 @@ dataflow automation software.
 
 ### What nifi affects
 
-This module will download the Apache NiFi tarball to `/var/tmp/`, and
-will require about 1.5 GiB. Please make sure you have space for this
-file.
+This module will download the Apache NiFi tarball to `/var/tmp/`.
+Please make sure you have space for this file.
 
-The tarball will be unpacked to `/opt/nifi`, where it will require
-about the same space.
-
-The configuration will be installed in `/etc/opt/nifi`, and
-repositories under `/var/opt/nifi`.
+The tarball will be unpacked to `/opt/nifi` by default, where it will
+require about the same disk space.
 
 ### Setup Requirements
 
@@ -37,59 +33,52 @@ Java 11.
 
 NiFi requires ~ 1.3 GiB download, temporary storage and unpacked
 storage. Ensure `/opt/nifi` and `/var/tmp` has room for the downloaded
-and unpacked software. Also ensure `/var/opt/nifi` has room for your
-repositories.
+and unpacked software.
 
 When installing on local infrastructure, consider download the
 distribution tarballs, validate them with the Apache distribution
-keys, and store it on a local repository. Adjust the `nifi::download`
-configuration variables to point to your local repository. The [NiFi
-download page](https://nifi.apache.org/download.html) also documents
-how to verify the integrity and authenticity of the downloaded files.
+keys, and store it on a local repository. Adjust the configuration
+variables to point to your local repository. The [NiFi download
+page](https://nifi.apache.org/download.html) also documents how to
+verify the integrity and authenticity of the downloaded files.
 
 ### Beginning with nifi
 
-The very basic steps needed for a user to get the module up and running. This can include setup steps, if necessary, or it can be an example of the most basic use of the module.
+Add dependency modules to your puppet environment:
+
+- puppet/archive
+- puppetlabs/stdlib
+- camptocamp/systemd
 
 ## Usage
 
-Include usage examples for common use cases in the **Usage** section. Show your users how to use your module to solve problems, and be sure to include code examples. Include three to five examples of the most important or common tasks a user can accomplish with your module. Show users how to accomplish more complex tasks that involve different types, classes, and functions working in tandem.
+To download and install NiFi, include the module. This will download
+nifi, unpack it under `/opt/nifi/nifi-<version>`, and start the
+service with default configuration and storage locations.
 
-## Reference
-
-This section is deprecated. Instead, add reference information to your code as Puppet Strings comments, and then use Strings to generate a REFERENCE.md in your module. For details on how to add code comments and generate documentation with Strings, see the Puppet Strings [documentation](https://puppet.com/docs/puppet/latest/puppet_strings.html) and [style guide](https://puppet.com/docs/puppet/latest/puppet_strings_style.html)
-
-If you aren't ready to use Strings yet, manually create a REFERENCE.md in the root of your module directory and list out each of your module's classes, defined types, facts, functions, Puppet tasks, task plans, and resource types and providers, along with the parameters for each.
-
-For each element (class, defined type, function, and so on), list:
-
-  * The data type, if applicable.
-  * A description of what the element does.
-  * Valid values, if the data type doesn't make it obvious.
-  * Default value, if any.
-
-For example:
-
+```puppet
+include nifi
 ```
-### `pet::cat`
+To host the file locally, add a nifi::download_url variable for the
+module.
 
-#### Parameters
-
-##### `meow`
-
-Enables vocalization in your cat. Valid options: 'string'.
-
-Default: 'medium-loud'.
+```yaml
+nifi::download\_url: "http://my-local-repo.example.com/apache/nifi/1.10.0/nifi-1.10.0-bin.tar.gz"
 ```
+
+Please keep `nifi::download_url`, `nifi::download_checksum` and
+`nifi::version` in sync. The URL, checksum and version should match.
+Otherwise, Puppet will become confused.
 
 ## Limitations
 
-In the Limitations section, list any incompatibilities, known issues, or other warnings.
+This module is under development, and therefore somewhat light on
+functionality.
+
+Configuration and repository directories are not managed yet. These
+can be managed outside the module with `file` resources.
 
 ## Development
 
-In the Development section, tell other users the ground rules for contributing to your project and how they should submit their work.
-
-## Release Notes/Contributors/Etc. **Optional**
-
-If you aren't using changelog, put your release notes here (though you should consider using changelog). You can also add any additional sections you feel are necessary or important to include here. Please use the `## ` header.
+In the Development section, tell other users the ground rules for
+contributing to your project and how they should submit their work.

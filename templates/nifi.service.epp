@@ -8,9 +8,8 @@
 Description=Apache NiFi
 
 [Service]
-Type=forking
-ExecStart=<%= $nifi_home %>/bin/nifi.sh start
-ExecStop=<%= $nifi_home %>/bin/nifi.sh stop
+Type=simple
+ExecStart=<%= $nifi_home %>/bin/nifi.sh run
 GuessMainPID=yes
 User=<%= $user %>
 LimitNOFILE=<%= $limit_nofile %>

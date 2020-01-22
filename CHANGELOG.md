@@ -8,10 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-- systemd now starts the process as a simple instead of a forking
+
+* systemd now starts the process as a simple instead of a forking
   service.
 
 ## [0.1.0] - 2020-01-14
+
 ### Added
-- Initial release.
-- Download, install and start Apache NiFi.
+
+* Initial release.
+* Download, install and start Apache NiFi.

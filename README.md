@@ -46,9 +46,9 @@ verify the integrity and authenticity of the downloaded files.
 
 Add dependency modules to your puppet environment:
 
-- puppet/archive
-- puppetlabs/stdlib
-- camptocamp/systemd
+* puppet/archive
+* puppetlabs/stdlib
+* camptocamp/systemd
 
 ## Usage
 
@@ -59,6 +59,7 @@ service with default configuration and storage locations.
 ```puppet
 include nifi
 ```
+
 To host the file locally, add a nifi::download_url variable for the
 module.
 

@@ -50,6 +50,12 @@ Add dependency modules to your puppet environment:
 * puppetlabs/stdlib
 * camptocamp/systemd
 
+You need to ensure java 8 or 11 is installed. If in doubt, use this module:
+
+* puppetlabs/java
+
+Follow the NiFi administration guide for configuration.
+
 ## Usage
 
 To download and install NiFi, include the module. This will download

@@ -70,7 +70,7 @@ To host the file locally, add a nifi::download_url variable for the
 module.
 
 ```yaml
-nifi::download\_url: "http://my-local-repo.example.com/apache/nifi/1.10.0/nifi-1.10.0-bin.tar.gz"
+nifi::download_url: "https://repo.example.com/nifi/nifi-1.10.0-bin.tar.gz"
 ```
 
 Please keep `nifi::download_url`, `nifi::download_checksum` and

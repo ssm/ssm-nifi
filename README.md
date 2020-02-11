@@ -58,9 +58,10 @@ verify the integrity and authenticity of the downloaded files.
 
 Add dependency modules to your puppet environment:
 
-* puppet/archive
-* puppetlabs/stdlib
 * camptocamp/systemd
+* puppet/archive
+* puppetlabs/inifile
+* puppetlabs/stdlib
 
 You need to ensure java 8 or 11 is installed. If in doubt, use this module:
 

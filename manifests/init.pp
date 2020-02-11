@@ -26,6 +26,9 @@
 #   The checksum type of the downloaded tarball. This is used for
 #   verifying the integrity of the downloaded tarball.
 #
+# @param download_tmp_dir
+#   Temporary directory for downloading the tarball.
+#
 # @param service_limit_nofile
 #   The limit on number of open files permitted for the service. Used
 #   for LimitNOFILE= in nifi.service.

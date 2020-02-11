@@ -90,6 +90,19 @@ Please keep `nifi::download_url`, `nifi::download_checksum` and
 `nifi::version` in sync. The URL, checksum and version should match.
 Otherwise, Puppet will become confused.
 
+To set nifi properties, like the 'sensitive properties key', add them
+to the `nifi_properties` class parameter. Example:
+
+```puppet
+class { 'nifi':
+  nifi_properties => {
+    'nifi.sensitive.props.key' =>  'keep it secret, keep it safe',
+  },
+}
+```
+
+(I recommend you use `hiera-eyaml` to store this somewhat securely.)
+
 ## Limitations
 
 This module is under development, and therefore somewhat light on

@@ -9,9 +9,11 @@ class nifi::config (
   Hash $nifi_properties,
   String $user,
   String $group,
+  String $version,
 ) {
 
-  $nifi_properties_file = "${install_root}/conf/nifi.properties"
+  $software_directory = "${install_root}/nifi-${version}"
+  $nifi_properties_file = "${software_directory}/conf/nifi.properties"
 
   $path_properties = {
     'nifi.nar.working.directory'                   => "${var_directory}/work/nar/",

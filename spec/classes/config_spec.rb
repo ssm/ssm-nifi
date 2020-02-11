@@ -7,6 +7,7 @@ describe 'nifi::config' do
       let(:params) do
         {
           install_root: '/opt/nifi',
+          version: '1.2.3',
           var_directory: '/var/opt/nifi',
           nifi_properties: {},
           user: 'nifi',

@@ -87,6 +87,7 @@ class nifi (
     group           => $group,
     var_directory   => $var_directory,
     nifi_properties => $nifi_properties,
+    version         => $version,
   }
 
   class {'nifi::service':

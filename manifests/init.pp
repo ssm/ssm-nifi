@@ -37,6 +37,14 @@
 # @param install_root
 #   The root directory of the nifi installation.
 #
+# @param var_directory
+#   The root of the writable paths used by NiFi. Nifi will create
+#   directories beneath this path.  This will implicitly add nifi
+#   properties for working directories and repositories.
+#
+# @param nifi_properties
+#   Hash of parameter key/values to be added to conf/nifi.properties.
+#
 # @example Defaults
 #   include nifi
 #
@@ -57,7 +65,9 @@ class nifi (
   String $download_checksum_type = 'sha256',
   Integer $service_limit_nofile = 50000,
   Integer $service_limit_nproc = 10000,
+  Hash $nifi_properties = {},
   Stdlib::Absolutepath $install_root = '/opt/nifi',
+  Stdlib::Absolutepath $var_directory = '/var/opt/nifi',
 ) {
 
   class { 'nifi::install':
@@ -71,7 +81,14 @@ class nifi (
     download_tmp_dir       => $download_tmp_dir,
   }
 
-  include nifi::config
+  class { 'nifi::config':
+    install_root    => $install_root,
+    user            => $user,
+    group           => $group,
+    var_directory   => $var_directory,
+    nifi_properties => $nifi_properties,
+    version         => $version,
+  }
 
   class {'nifi::service':
     install_root => $install_root,

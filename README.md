@@ -26,6 +26,18 @@ Please make sure you have space for this file.
 The tarball will be unpacked to `/opt/nifi` by default, where it will
 require about the same disk space.
 
+The module will create `/var/opt/nifi`, for persistent storage outside
+the software install root. This will also configure the following nifi
+properties to create directories under this path.
+
+* nifi.content.repository.directory.default
+* nifi.database.directory
+* nifi.documentation.working.directory
+* nifi.flowfile.repository.directory
+* nifi.nar.working.directory
+* nifi.provenance.repository.directory.default
+* nifi.web.jetty.working.directory
+
 ### Setup Requirements
 
 NiFi requires Java Runtime Environment. Nifi 1.10.1 runs on Java 8 or
@@ -82,8 +94,8 @@ Otherwise, Puppet will become confused.
 This module is under development, and therefore somewhat light on
 functionality.
 
-Configuration and repository directories are not managed yet. These
-can be managed outside the module with `file` resources.
+Configuration outside `nifi.properties` are not managed yet. These can
+be managed outside the module with `file` resources.
 
 ## Development
 

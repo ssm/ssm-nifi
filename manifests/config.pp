@@ -34,7 +34,7 @@ class nifi::config (
     mode   => '0750',
   }
 
-  $nifi_properties.each |String $key, String $value| {
+  $_nifi_properties.each |String $key, String $value| {
     ini_setting { "nifi property ${key}":
       ensure  => present,
       path    => $nifi_properties_file,

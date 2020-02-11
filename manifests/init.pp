@@ -50,9 +50,9 @@
 #
 # @example Downloading from a different repository
 #   class { 'nifi':
-#     version                => 'x.y.z',
-#     download_url           => 'https://my.local.repo.example.com/apache/nifi/nifi-x.y.z.tar.gz',
-#     download_checksum      => 'abcde...',
+#     version           => 'x.y.z',
+#     download_url      => 'https://my.local.repo.example.com/apache/nifi/nifi-x.y.z.tar.gz',
+#     download_checksum => 'abcde...',
 #   }
 #
 class nifi (

@@ -2,6 +2,7 @@
 fixtures:
   forge_modules:
     archive: "puppet/archive"
+    augeas_core: "puppetlabs/augeas_core"
     inifile: "puppetlabs/inifile"
     java: "puppetlabs/java"
     stdlib: "puppetlabs/stdlib"

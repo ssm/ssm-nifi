@@ -42,4 +42,14 @@ class nifi::config (
       value   => $value,
     }
   }
+
+  augeas { 'nifi local state directory':
+    root    => "${software_directory}/conf",
+    incl    => '/state-management.xml',
+    lens    => 'Xml.lns',
+    changes => [
+      "set stateManagement/local-provider/property[#attribute/name='Directory']/#text ${var_directory}/state/local",
+
+    ]
+  }
 }

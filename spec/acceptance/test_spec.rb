@@ -1,14 +1,25 @@
 require 'spec_helper_acceptance'
 
-describe 'install' do
-  let(:pp) do
-    <<-MANIFEST
-    class { 'nifi':
-    }
-    MANIFEST
+pp_defaults = <<-PUPPETCODE
+  class { 'java': }
+  class { 'nifi': }
+
+  Package['java'] -> Service['nifi.service']
+PUPPETCODE
+
+describe 'Apache NiFi' do
+  idempotent_apply(pp_defaults)
+
+  describe file('/opt/nifi') do
+    it { is_expected.to be_directory }
   end
 
-  it 'applies the manifest twice with no stderr' do
-    idempotent_apply(pp)
+  describe file('/opt/nifi/current/conf/nifi.properties') do
+    it { is_expected.to be_file }
+  end
+
+  describe service('nifi.service') do
+    it { is_expected.to be_running }
+    it { is_expected.to be_enabled }
   end
 end

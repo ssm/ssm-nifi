@@ -45,4 +45,9 @@ class nifi::install (
     group  => 'nifi',
     mode   => '0750',
   }
+
+  file { "${install_root}/current":
+    ensure => link,
+    target => $software_directory,
+  }
 }

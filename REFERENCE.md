@@ -51,7 +51,7 @@ The version of Apache NiFi. This must match the version in the
 tarball. This is used for managing files, directories and paths in
 the service.
 
-Default value: '1.11.1'
+Default value: '1.11.3'
 
 ##### `user`
 
@@ -77,7 +77,7 @@ Data type: `String`
 
 Where to download the binary installation tarball from.
 
-Default value: 'http://mirrors.ibiblio.org/apache/nifi/1.11.1/nifi-1.11.1-bin.tar.gz'
+Default value: 'http://mirrors.ibiblio.org/apache/nifi/1.11.3/nifi-1.11.3-bin.tar.gz'
 
 ##### `download_checksum`
 
@@ -86,7 +86,7 @@ Data type: `String`
 The expected checksum of the downloaded tarball. This is used for
 verifying the integrity of the downloaded tarball.
 
-Default value: 'b0b35a9db0e6c8c299ca174e668acf8389488976b1674f08771f9361d884c5f3'
+Default value: '8b7fc8e8a6e2af7f7a37212fabbd11664ecd935dd3158e9fc3349f93929fb210'
 
 ##### `download_checksum_type`
 

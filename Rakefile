@@ -88,7 +88,7 @@ end
 
 Blacksmith::RakeTask.new do |t|
   t.tag_pattern = "%s"
-  t.tag_message_pattern = "Release version %s/nSee CHANGELOG.md for details"
+  t.tag_message_pattern = "Release version %s\nSee CHANGELOG.md for details"
   t.commit_message_pattern = "Bump version to %s"
   t.tag_sign = true
 end

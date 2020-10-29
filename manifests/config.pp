@@ -27,13 +27,6 @@ class nifi::config (
 
   $_nifi_properties = $path_properties + $nifi_properties
 
-  file { $var_directory:
-    ensure => directory,
-    owner  => $user,
-    group  => $group,
-    mode   => '0750',
-  }
-
   $_nifi_properties.each |String $key, String $value| {
     ini_setting { "nifi property ${key}":
       ensure  => present,

@@ -46,6 +46,13 @@ class nifi::install (
     mode   => '0750',
   }
 
+  file { $var_directory:
+    ensure => directory,
+    owner  => $user,
+    group  => $group,
+    mode   => '0750',
+  }
+
   file { "${install_root}/current":
     ensure => link,
     target => $software_directory,

@@ -41,8 +41,8 @@ class nifi::install (
 
   file { $install_root:
     ensure => directory,
-    owner  => 'nifi',
-    group  => 'nifi',
+    owner  => $user,
+    group  => $group,
     mode   => '0750',
   }
 

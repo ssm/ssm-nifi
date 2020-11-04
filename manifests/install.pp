@@ -10,6 +10,7 @@ class nifi::install (
   String $download_checksum,
   String $download_checksum_type,
   Stdlib::Absolutepath $download_tmp_dir,
+  Stdlib::Absolutepath $var_directory,
   String $user,
   String $group,
 ) {

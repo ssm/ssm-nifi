@@ -82,6 +82,7 @@ class nifi (
     download_checksum      => $download_checksum,
     download_checksum_type => $download_checksum_type,
     download_tmp_dir       => $download_tmp_dir,
+    var_directory          => $var_directory,
   }
 
   class { 'nifi::config':

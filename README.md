@@ -136,6 +136,7 @@ class profile::nifi (
   Stdlib::Absolutepath $hostprivkey = '/var/lib/puppet/ssl/private_keys/nifi-01.example.com.pem',
   Stdlib::Absolutepath $hostcert = '/var/lib/puppet/ssl/certs/nifi-01.example.com.pem',
   Stdlib::Absolutepath $localcacert = '/var/lib/puppet/ssl/certs/ca.pem',
+  Stdlib::Absolutepath $config_resource_dir = '/opt/nifi/config-resources',
   String $storepassword = 'puppet',
 ) {
 
@@ -171,19 +172,13 @@ class profile::nifi (
       # Host properties
       'nifi.cluster.node.address'       => $trusted['certname'],
       'nifi.cluster.node.protocol.port' => '11443',
-    }
-  }
 
-  # DIY part. You can use one of:
-  # - just a static file
-  # - template with data from hiera
-  # - puppetlabs-concat with exported concat::fragments from your nodes
-  # - augeas XML lens
-  # - something else
-  # see authorizers.xml for suggested contents below.
-  file { '/opt/nifi/current/conf/authorizers.xml':
-    notify  => Service['nifi.service'],
-    content => epp('profile/nifi/authorizers.xml.epp', { 'foo' => 'bar' } )
+      # Path properties
+      'nifi.authorizer.configuration.file'  => "${config_resource_dir}/authorizers.xml",
+      'nifi.flow.configuration.file'        => "${config_resource_dir}/flow.xml.gz",
+      'nifi.flow.configuration.archive.dir' => "${config_resource_dir}/archive",
+
+    }
   }
 
   class { 'nifi_toolkit':
@@ -236,7 +231,12 @@ make it look like an email address, it will not.
 Create a PKCS12 bundle from the key and certificate, download it to
 your workstation, and add it to your web browser.
 
-#### Authorization rules
+#### Clustering NiFi
+
+Creating a NiFi cluster requires authorization rules for cluster nodes
+and zookeeper configuration.
+
+#### Authorizers
 
 Provision a `/opt/nifi/current/conf/authorizers.xml` configuration
 files to your NiFi nodes
@@ -245,52 +245,118 @@ This file adds the certificates of the cluster nodes, as well as the
 certificate for the initial admin. Once the initial admin logs in,
 they can manage users and roles in the web interface.
 
+If this is created from a template, it needs the `admin_identity`,
+`node identities` and path to the `config_resource_dir` used above.
+
+Example authorization configuration rules using TLS certificates for
+cluster nodes and admin web access:
+
+The path to `authorizers.xml` is configured with the
+nifi.authorizer.configuration.file property. Default is
+`./conf/authorizers.xml`, but it should be set outside the
+installation directory to make upgrades easier.
+
+```puppet
+file { '/opt/nifi/config-resources/authorizers.xml':
+  content => epp('profile/nifi/authorizers.xml.epp', {
+    'admin_identity'      => $admin_identity,
+    'cluster_nodes'       => $cluster_nodes,
+    'config_resource_dir' => $config_resource_dir,
+  }),
+}
+```
+
+```puppet
+<%- | String $admin_identity,
+      Hash[Stdlib::Fqdn, Struct[{id => Integer[1]}]] $cluster_nodes,
+      Stdlib::Absolutepath $config_resource_dir,
+    | -%>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+
+    This file is managed by puppet.
+
+-->
+<authorizers>
+    <authorizer>
+      <identifier>file-provider</identifier>
+      <class>org.apache.nifi.authorization.FileAuthorizer</class>
+      <property name="Authorizations File"><%= $config_resource_dir %>/authorizations.xml</property>
+      <property name="Users File"><%= $config_resource_dir %>/users.xml</property>
+      <property name="Legacy Authorized Users File"></property>
+
+      <property name="Initial Admin Identity"><%= $admin_identity %></property>
+
+      <%- $cluster_nodes.each | $cluster_node, $params | {
+            $node_dn = "CN=${cluster_node}"
+            $node_id = "Node Identity ${params['id']}"
+      -%>
+      <property name="<%= $node_id %>"><%= $node_dn %></property>
+      <%- } -%>
+    </authorizer>
+</authorizers>
+```
+
+In a three node cluster it should look like:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--
-    This file lists the userGroupProviders, accessPolicyProviders, and authorizers to use when running securely. In order
-    to use a specific authorizer it must be configured here and it's identifier must be specified in the nifi.properties file.
-    If the authorizer is a managedAuthorizer, it may need to be configured with an accessPolicyProvider and an userGroupProvider.
-    This file allows for configuration of them, but they must be configured in order:
 
-    ...
-    all userGroupProviders
-    all accessPolicyProviders
-    all Authorizers
-    ...
+    This file is managed by puppet.
+
 -->
 <authorizers>
-
-    <userGroupProvider>
-        <identifier>file-user-group-provider</identifier>
-        <class>org.apache.nifi.authorization.FileUserGroupProvider</class>
-        <property name="Users File">./conf/users.xml</property>
-        <property name="Legacy Authorized Users File"></property>
-
-        <property name="Initial User Identity 1">CN=nifi-admin.users.example.com</property>
-        <property name="Node identity 1">CN=nifi-01.example.com</property>
-        <property name="Node identity 2">CN=nifi-02.example.com</property>
-    </userGroupProvider>
-
-    <accessPolicyProvider>
-        <identifier>file-access-policy-provider</identifier>
-        <class>org.apache.nifi.authorization.FileAccessPolicyProvider</class>
-        <property name="User Group Provider">file-user-group-provider</property>
-        <property name="Authorizations File">./conf/authorizations.xml</property>
-        <property name="Initial Admin Identity">CN=nifi-admin.users.example.com</property>
-        <property name="Legacy Authorized Users File"></property>
-        <property name="Node identity 1">CN=nifi-01.example.com</property>
-        <property name="Node identity 1">CN=nifi-02.example.com</property>
-        <property name="Node Group"></property>
-    </accessPolicyProvider>
-
     <authorizer>
-        <identifier>managed-authorizer</identifier>
-        <class>org.apache.nifi.authorization.StandardManagedAuthorizer</class>
-        <property name="Access Policy Provider">file-access-policy-provider</property>
+      <identifier>file-provider</identifier>
+      <class>org.apache.nifi.authorization.FileAuthorizer</class>
+      <property name="Authorizations File">/opt/nifi/config-resources/authorizations.xml</property>
+      <property name="Users File">/opt/nifi/config-resources/users.xml</property>
+      <property name="Legacy Authorized Users File"></property>
+
+      <property name="Initial Admin Identity">CN=admin.users.example.com</property>
+
+      <property name="Node Identity 1">CN=node1.example.com</property>
+      <property name="Node Identity 2">CN=node2.example.com</property>
+      <property name="Node Identity 3">CN=node3.example.com</property>
     </authorizer>
 </authorizers>
+```
+#### Zookeeper
+
+The `./conf/zookeeper.properties` file is used in a multi node cluster
+
+In a three-node cluster it should look like:
+
+```ini
+# Managed by Puppet
+
+initLimit=10
+autopurge.purgeInterval=24
+syncLimit=5
+tickTime=2000
+dataDir=/var/opt/nifi/state/zookeeper
+autopurge.snapRetainCount=30
+
+server.1=node1.example.com:2888:3888;2181
+server.2=node2.example.com:2888:3888;2181
+server.3=node3.example.com:2888:3888;2181
+```
+
+### Managing upgrades
+
+The [Upgrade
+Recommendations](https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html#upgrade-recommendations)
+lists properties which should be set to enable NiFi upgrades to keep
+the same configuration and state.
+
+The module has defaults for data storage outside the installation
+directory. For now, you need to add add settings to point to the
+`config_resource_dir` used in the examples above.
+
+- `nifi.flow.configuration.file`
+- `nifi.flow.configuration.archive.dir`
+- `nifi.authorizer.configuration.file`
 ```
 
 
@@ -301,6 +367,10 @@ functionality.
 
 Configuration outside `nifi.properties` are not managed yet. These can
 be managed outside the module with `file` resources.
+
+This module configures rudimentart NiFi state management with local
+file method. The `zookeeper` and `redis` methods are not managed with
+this module.
 
 ## Development
 

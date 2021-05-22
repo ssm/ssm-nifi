@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-### Changed
+### Fixed
+- Use user and group parameters when managing the install directory instead of hardcoded 'nifi'
+- Fix missing parameter `var_directory`
 
-* Install NiFi version `1.12.1` by default.
+### Changed
+- Install NiFi version `1.12.1` by default.
+- Update module with PDK 2.1.0
+- Adjust upper bounds for dependencies on puppet and modules
+
+### Added
+- Add documentation example for NiFi cluster
 
 ## [0.3.1] - 2020-07-09
 

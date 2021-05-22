@@ -6,7 +6,8 @@ describe 'nifi::install' do
       let(:facts) { os_facts }
       let(:params) do
         {
-          install_root: '/nonexistant',
+          install_root: '/opt/nifi',
+          var_directory: '/var/opt/nifi',
           version: '1.0.0',
           download_url: 'http://localhost/nifi-1.0.0.tar.gz',
           download_checksum: 'abcde...',

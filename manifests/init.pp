@@ -59,13 +59,13 @@
 #   }
 #
 class nifi (
-  String $version = '1.12.1',
-  String $download_url = 'http://mirrors.ibiblio.org/apache/nifi/1.12.1/nifi-1.12.1-bin.tar.gz',
-  String $download_checksum = '0bb0e24ac5f2f1bb90519cfa24e201fc34346b3bb4d1f79972aeaa2fd4a4bd75',
+  String $version = '1.13.2',
+  String $download_url = 'http://mirrors.ibiblio.org/apache/nifi/1.13.2/nifi-1.13.2-bin.tar.gz',
+  String $download_checksum = '1d4f5315e8bc04f68628e797cc1c674e8546d67e780e1a7fbdea9ca10a39cd2a',
+  String $download_checksum_type = 'sha256',
   Stdlib::Absolutepath $download_tmp_dir = '/var/tmp',
   String $user = 'nifi',
   String $group = 'nifi',
-  String $download_checksum_type = 'sha256',
   Integer $service_limit_nofile = 50000,
   Integer $service_limit_nproc = 10000,
   Hash $nifi_properties = {},

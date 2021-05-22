@@ -79,16 +79,33 @@ service with default configuration and storage locations.
 include nifi
 ```
 
-To host the file locally, add a nifi::download_url variable for the
-module.
+To host a specific version of nifi locally, use the `download_url`,
+`download_checksum` and `version` parameters.
 
-```yaml
-nifi::download_url: "https://repo.example.com/nifi/nifi-1.10.0-bin.tar.gz"
+Example using puppet manifests
+```puppet
+class { 'nifi':
+  version           => '1.13.2',
+  download_checksum => '1d4f5315e8bc04f68628e797cc1c674e8546d67e780e1a7fbdea9ca10a39cd2a',
+  download_url      => 'https://repo.example.com/nifi/nifi-1.13.2-bin.tar.gz',
+}
 ```
 
-Please keep `nifi::download_url`, `nifi::download_checksum` and
-`nifi::version` in sync. The URL, checksum and version should match.
-Otherwise, Puppet will become confused.
+Example using hieradata
+
+```puppet
+include nifi
+```
+
+```yaml
+nifi::version: "1.13.2"
+nifi::download_checksum: "1d4f5315e8bc04f68628e797cc1c674e8546d67e780e1a7fbdea9ca10a39cd2a"
+nifi::download_url: "https://repo.example.com/nifi/nifi-1.13.2-bin.tar.gz"
+```
+
+Please keep `download_url`, `download_checksum` and `version` in sync. The
+URL, checksum and version should match. Otherwise, Puppet will become
+confused.
 
 To set nifi properties, like the 'sensitive properties key', add them
 to the `nifi_properties` class parameter. Example:

@@ -379,8 +379,6 @@ directory. For now, you need to add add settings to point to the
 - `nifi.flow.configuration.file`
 - `nifi.flow.configuration.archive.dir`
 - `nifi.authorizer.configuration.file`
-```
-
 
 ## Limitations
 

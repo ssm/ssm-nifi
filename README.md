@@ -40,7 +40,7 @@ properties to create directories under this path.
 
 ### Setup Requirements
 
-NiFi requires Java Runtime Environment. Nifi 1.10.1 runs on Java 8 or
+NiFi requires Java Runtime Environment. NiFi 1.14.0 runs on Java 8 or
 Java 11.
 
 NiFi requires ~ 1.3 GiB download, temporary storage and unpacked
@@ -67,7 +67,11 @@ You need to ensure java 8 or 11 is installed. If in doubt, use this module:
 
 * puppetlabs/java
 
-Follow the NiFi administration guide for configuration.
+By default, NiFi 1.14.0 and later starts with a self-signed TLS certificate,
+listens on the `lo` interface only, and generates a random username and
+password for access. You will need to add nifi properties to override this.
+Follow the NiFi administration guide for configuration, or see the example
+further down in this README.
 
 ## Usage
 
@@ -82,25 +86,26 @@ include nifi
 To host a specific version of nifi locally, use the `download_url`,
 `download_checksum` and `version` parameters.
 
-Example using puppet manifests
+Example using puppet manifests:
+
 ```puppet
 class { 'nifi':
-  version           => '1.13.2',
-  download_checksum => '1d4f5315e8bc04f68628e797cc1c674e8546d67e780e1a7fbdea9ca10a39cd2a',
-  download_url      => 'https://repo.example.com/nifi/nifi-1.13.2-bin.tar.gz',
+  version           => '1.14.0',
+  download_checksum => '858e12bce1da9bef24edbff8d3369f466dd0c48a4f9892d4eb3478f896f3e68b',
+  download_url      => 'https://repo.example.com/nifi/nifi-1.14.0-bin.tar.gz',
 }
 ```
 
-Example using hieradata
+Example using hieradata:
 
 ```puppet
 include nifi
 ```
 
 ```yaml
-nifi::version: "1.13.2"
-nifi::download_checksum: "1d4f5315e8bc04f68628e797cc1c674e8546d67e780e1a7fbdea9ca10a39cd2a"
-nifi::download_url: "https://repo.example.com/nifi/nifi-1.13.2-bin.tar.gz"
+nifi::version: "1.14.0"
+nifi::download_checksum: "858e12bce1da9bef24edbff8d3369f466dd0c48a4f9892d4eb3478f896f3e68b"
+nifi::download_url: "https://repo.example.com/nifi/nifi-1.14.0-bin.tar.gz"
 ```
 
 Please keep `download_url`, `download_checksum` and `version` in sync. The

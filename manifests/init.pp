@@ -50,6 +50,11 @@
 #   create log files beneath this path and take care of log rotation and
 #   deletion.
 #
+# @param config_directory
+#   Directory for NiFi version independent configuration files to be kept
+#   across NiFi version upgrades. This is used in addition to the "./conf"
+#   directory within each NiFi installation.
+#
 # @param nifi_properties
 #   Hash of parameter key/values to be added to conf/nifi.properties.
 #
@@ -77,6 +82,7 @@ class nifi (
   Stdlib::Absolutepath $install_root = '/opt/nifi',
   Stdlib::Absolutepath $var_directory = '/var/opt/nifi',
   Stdlib::Absolutepath $log_directory = '/var/log/nifi',
+  Stdlib::Absolutepath $config_directory = '/opt/nifi/config',
 ) {
 
   class { 'nifi::install':
@@ -88,6 +94,7 @@ class nifi (
     download_checksum      => $download_checksum,
     download_checksum_type => $download_checksum_type,
     download_tmp_dir       => $download_tmp_dir,
+    config_directory       => $config_directory,
     var_directory          => $var_directory,
     log_directory          => $log_directory,
   }

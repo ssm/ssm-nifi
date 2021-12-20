@@ -38,6 +38,10 @@ properties to create directories under this path.
 * nifi.provenance.repository.directory.default
 * nifi.web.jetty.working.directory
 
+The module will create `/var/log/nifi`, and configures NiFi to write log files
+to this directory. NiFi handles log rotation by itself. See [Managing
+logs](#managing-logs) for more information.
+
 ### Setup Requirements
 
 NiFi requires Java Runtime Environment. NiFi 1.14.0 runs on Java 8 or

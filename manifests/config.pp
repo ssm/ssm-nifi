@@ -47,6 +47,6 @@ class nifi::config (
     content => epp('nifi/state-management.xml.epp', $state_management_properties),
     owner   => 'root',
     group   => $group,
-    mode    => '0750',
+    mode    => '0640',
   }
 }

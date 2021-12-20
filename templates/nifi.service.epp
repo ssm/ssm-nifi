@@ -10,7 +10,7 @@ Description=Apache NiFi
 
 [Service]
 Type=simple
-Environment=NIFI_LOG_DIR="<%= $log_directory %>"
+Environment=NIFI_OVERRIDE_NIFIENV=true NIFI_LOG_DIR="<%= $log_directory %>"
 ExecStart=<%= $nifi_home %>/bin/nifi.sh run
 GuessMainPID=yes
 User=<%= $user %>

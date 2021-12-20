@@ -19,6 +19,13 @@ class nifi::install (
   $local_tarball = "${download_tmp_dir}/nifi-${version}.tar.gz"
   $software_directory = "${install_root}/nifi-${version}"
 
+  $default_directory_parameters = {
+    ensure => directory,
+    owner  => $user,
+    group  => $group,
+    mode   => '0750',
+  }
+
   archive { $local_tarball:
     source        => $download_url,
     checksum      => $download_checksum,
@@ -42,24 +49,15 @@ class nifi::install (
   }
 
   file { $install_root:
-    ensure => directory,
-    owner  => $user,
-    group  => $group,
-    mode   => '0750',
+    * => $default_directory_parameters,
   }
 
   file { $log_directory:
-    ensure => directory,
-    owner  => $user,
-    group  => $group,
-    mode   => '0750',
+    * => $default_directory_parameters,
   }
 
   file { $var_directory:
-    ensure => directory,
-    owner  => $user,
-    group  => $group,
-    mode   => '0750',
+    * => $default_directory_parameters,
   }
 
   file { "${install_root}/current":

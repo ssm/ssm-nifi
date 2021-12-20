@@ -6,6 +6,7 @@
 class nifi::config (
   Stdlib::Absolutepath $install_root,
   Stdlib::Absolutepath $var_directory,
+  Stdlib::Absolutepath $config_directory,
   Hash $nifi_properties,
   String $user,
   String $group,
@@ -23,6 +24,7 @@ class nifi::config (
     'nifi.content.repository.directory.default'    => "${var_directory}/content_repository",
     'nifi.provenance.repository.directory.default' => "${var_directory}/provenance_repository",
     'nifi.web.jetty.working.directory'             => "${var_directory}/work/jetty",
+    'nifi.state.management.configuration.file'     => "${config_directory}/state-management.xml",
   }
 
   $_nifi_properties = $path_properties + $nifi_properties
@@ -36,13 +38,15 @@ class nifi::config (
     }
   }
 
-  augeas { 'nifi local state directory':
-    root    => "${software_directory}/conf",
-    incl    => '/state-management.xml',
-    lens    => 'Xml.lns',
-    changes => [
-      "set stateManagement/local-provider/property[#attribute/name='Directory']/#text ${var_directory}/state/local",
+  $state_management_properties = {
+    'local_directory' => "${var_directory}/state/local",
+  }
 
-    ]
+  file { "${config_directory}/state-management.xml":
+    ensure  => file,
+    content => epp('nifi/state-management.xml.epp', $state_management_properties),
+    owner   => 'root',
+    group   => $group,
+    mode    => '0750',
   }
 }

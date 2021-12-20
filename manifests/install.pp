@@ -12,6 +12,7 @@ class nifi::install (
   Stdlib::Absolutepath $download_tmp_dir,
   Stdlib::Absolutepath $var_directory,
   Stdlib::Absolutepath $log_directory,
+  Stdlib::Absolutepath $config_directory,
   String $user,
   String $group,
 ) {
@@ -49,6 +50,10 @@ class nifi::install (
   }
 
   file { $install_root:
+    * => $default_directory_parameters,
+  }
+
+  file { $config_directory:
     * => $default_directory_parameters,
   }
 

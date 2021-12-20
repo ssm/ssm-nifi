@@ -28,8 +28,6 @@ end
 group :system_tests do
   gem "puppet-module-posix-system-r#{minor_version}", '~> 1.0', require: false, platforms: [:ruby]
   gem "puppet-module-win-system-r#{minor_version}", '~> 1.0',   require: false, platforms: [:mswin, :mingw, :x64_mingw]
-  gem "ed25519", '~> 1.2',                                      require: false
-  gem "bcrypt_pbkdf", '~> 1.0',                                 require: false
 end
 
 puppet_version = ENV['PUPPET_GEM_VERSION']

@@ -30,5 +30,4 @@ describe 'Apache NiFi' do
   describe file('/var/log/nifi/nifi-bootstrap.log') do
     it { is_expected.to be_file }
   end
-
 end

@@ -9,13 +9,15 @@ class nifi::service (
   String $user,
   Integer[0] $limit_nofile,
   Integer[0] $limit_nproc,
+  Stdlib::Absolutepath $log_directory = '/var/log/nifi',
 ) {
 
   $service_params = {
-    'nifi_home'    => "${install_root}/nifi-${version}",
-    'user'         => $user,
-    'limit_nofile' => $limit_nofile,
-    'limit_nproc'  => $limit_nproc,
+    'nifi_home'     => "${install_root}/nifi-${version}",
+    'user'          => $user,
+    'limit_nofile'  => $limit_nofile,
+    'limit_nproc'   => $limit_nproc,
+    'log_directory' => $log_directory,
   }
 
   systemd::unit_file { 'nifi.service':

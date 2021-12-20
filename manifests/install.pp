@@ -11,6 +11,7 @@ class nifi::install (
   String $download_checksum_type,
   Stdlib::Absolutepath $download_tmp_dir,
   Stdlib::Absolutepath $var_directory,
+  Stdlib::Absolutepath $log_directory,
   String $user,
   String $group,
 ) {
@@ -41,6 +42,13 @@ class nifi::install (
   }
 
   file { $install_root:
+    ensure => directory,
+    owner  => $user,
+    group  => $group,
+    mode   => '0750',
+  }
+
+  file { $log_directory:
     ensure => directory,
     owner  => $user,
     group  => $group,

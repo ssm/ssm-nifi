@@ -22,4 +22,13 @@ describe 'Apache NiFi' do
     it { is_expected.to be_running }
     it { is_expected.to be_enabled }
   end
+
+  describe file('/var/log/nifi') do
+    it { is_expected.to be_directory }
+  end
+
+  describe file('/var/log/nifi/nifi-bootstrap.log') do
+    it { is_expected.to be_file }
+  end
+
 end

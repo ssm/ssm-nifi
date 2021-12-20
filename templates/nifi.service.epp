@@ -3,12 +3,14 @@
     Integer[0] $limit_nproc,
     String $user,
     Stdlib::Absolutepath $nifi_home,
+    Stdlib::Absolutepath $log_directory,
     | -%>
 [Unit]
 Description=Apache NiFi
 
 [Service]
 Type=simple
+Environment=NIFI_LOG_DIR="<%= $log_directory %>"
 ExecStart=<%= $nifi_home %>/bin/nifi.sh run
 GuessMainPID=yes
 User=<%= $user %>

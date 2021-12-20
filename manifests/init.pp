@@ -45,6 +45,11 @@
 #   directories beneath this path.  This will implicitly add nifi
 #   properties for working directories and repositories.
 #
+# @param log_directory
+#   The directory where NiFi stores its user, app and bootstrap logs. Nifi will
+#   create log files beneath this path and take care of log rotation and
+#   deletion.
+#
 # @param nifi_properties
 #   Hash of parameter key/values to be added to conf/nifi.properties.
 #
@@ -71,6 +76,7 @@ class nifi (
   Hash $nifi_properties = {},
   Stdlib::Absolutepath $install_root = '/opt/nifi',
   Stdlib::Absolutepath $var_directory = '/var/opt/nifi',
+  Stdlib::Absolutepath $log_directory = '/var/log/nifi',
 ) {
 
   class { 'nifi::install':
@@ -83,6 +89,7 @@ class nifi (
     download_checksum_type => $download_checksum_type,
     download_tmp_dir       => $download_tmp_dir,
     var_directory          => $var_directory,
+    log_directory          => $log_directory,
   }
 
   class { 'nifi::config':
@@ -95,11 +102,12 @@ class nifi (
   }
 
   class {'nifi::service':
-    install_root => $install_root,
-    version      => $version,
-    user         => $user,
-    limit_nofile => $service_limit_nofile,
-    limit_nproc  => $service_limit_nproc,
+    install_root  => $install_root,
+    version       => $version,
+    user          => $user,
+    limit_nofile  => $service_limit_nofile,
+    limit_nproc   => $service_limit_nproc,
+    log_directory => $log_directory,
   }
 
   Class['nifi::install'] -> Class['nifi::config'] ~> Class['nifi::service']

@@ -55,6 +55,7 @@ The following parameters are available in the `nifi` class:
 * [`service_limit_nproc`](#service_limit_nproc)
 * [`install_root`](#install_root)
 * [`var_directory`](#var_directory)
+* [`log_directory`](#log_directory)
 * [`nifi_properties`](#nifi_properties)
 
 ##### <a name="version"></a>`version`
@@ -154,6 +155,16 @@ directories beneath this path.  This will implicitly add nifi
 properties for working directories and repositories.
 
 Default value: `'/var/opt/nifi'`
+
+##### <a name="log_directory"></a>`log_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+The directory where NiFi stores its user, app and bootstrap logs. Nifi will
+create log files beneath this path and take care of log rotation and
+deletion.
+
+Default value: `'/var/log/nifi'`
 
 ##### <a name="nifi_properties"></a>`nifi_properties`
 

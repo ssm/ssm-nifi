@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [unreleased]
 ### Added
 - Set NiFi log directory to `/var/log/nifi`.
+- Manage a configuration directory `/opt/nifi/config` outside the NiFi
+  installation for configuration files intended to survive an upgrade of NiFi.
 
 ## [0.6.0] - 2021-12-20
 ### Changed

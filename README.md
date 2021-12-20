@@ -380,6 +380,33 @@ directory. For now, you need to add add settings to point to the
 - `nifi.flow.configuration.archive.dir`
 - `nifi.authorizer.configuration.file`
 
+### Managing logs
+
+The NiFi logs are written to `$nifi::log_directory` (default `/var/log/nifi`).
+The directory prevents access for "other", but the files within are otherwise
+readable. You can use ACLs on the directory to permit access to your favourite
+log reading program. The
+[puppet-posix\_acl](https://forge.puppet.com/modules/puppet/posix_acl) module
+can be used like this:
+
+```puppet
+class profile::nifi (
+  $log_directory => '/var/log/nifi',
+) {
+
+  class { 'nifi':
+    log_directory => $log_directory,
+    # [...]
+  }
+
+  posix_acl { $log_directory:
+    action     => set,
+    permission => [ 'user:logreader:r-x' ],
+    require    => File[$log_directory],
+  }
+}
+```
+
 ## Limitations
 
 This module is under development, and therefore somewhat light on

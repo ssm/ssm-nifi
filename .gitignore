@@ -24,5 +24,6 @@
 .DS_Store
 .project
 .envrc
+pdk.yaml
 /inventory.yaml
 /spec/fixtures/litmus_inventory.yaml

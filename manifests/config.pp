@@ -20,6 +20,12 @@ class nifi::config (
   $software_directory = "${install_root}/nifi-${version}"
   $nifi_properties_file = "${software_directory}/conf/nifi.properties"
 
+  $zookeeper_client_port = 2181
+  $zookeeper_connect_string = $cluster_nodes.map |$key, $value| {
+    "${key}:${zookeeper_client_port}"
+  }.sort.join(',')
+
+  $cluster_properties = {
   $path_properties = {
     'nifi.nar.working.directory'                   => "${var_directory}/work/nar/",
     'nifi.documentation.working.directory'         => "${var_directory}/work/docs/components",
@@ -44,6 +50,7 @@ class nifi::config (
 
   $state_management_properties = {
     'local_directory' => "${var_directory}/state/local",
+    'zookeeper_connect_string' => $zookeeper_connect_string,
   }
 
   file { "${config_directory}/state-management.xml":
@@ -52,5 +59,20 @@ class nifi::config (
     owner   => 'root',
     group   => $group,
     mode    => '0640',
+  }
+
+  $zookeeper_properties = {
+    'zookeeper_state_directory' => "${config_directory}/state/zookeeper",
+    'cluster_nodes' => $cluster_nodes,
+  }
+
+  if $cluster {
+    file { "${config_directory}/zookeeper.properties":
+      ensure  => file,
+      content => epp('nifi/zookeeper.properties.epp', $zookeeper_properties),
+      owner   => 'root',
+      group   => $group,
+      mode    => '0640',
+    }
   }
 }

@@ -1,0 +1,17 @@
+<% |
+   Stdlib::Absolutepath $zookeeper_state_directory,
+   Hash $cluster_nodes,
+   Stdlib::Port::Unprivileged $quorum_port = 2888,
+   Stdlib::Port::Unprivileged $election_port = 3888,
+   Stdlib::Port::Unprivileged $client_port = 2181,
+   | -%>
+initLimit=10
+autopurge.purgeInterval=24
+syncLimit=5
+tickTime=2000
+dataDir=<%= $zookeeper_state_directory %>
+autopurge.snapRetainCount=30
+
+<% $cluster_nodes.each |$key, $value| { -%>
+server.<%= $value['id'] %>=<%= $key %>:<%= $quorum_port %>:<%= $election_port %>;<%= $client_port %>
+<% } -%>

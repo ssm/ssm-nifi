@@ -16,6 +16,7 @@
       - [Zookeeper](#zookeeper)
     - [Managing upgrades](#managing-upgrades)
     - [Managing logs](#managing-logs)
+    - [NiFi state management](#nifi-state-management)
   - [Limitations](#limitations)
   - [Development](#development)
 
@@ -416,6 +417,31 @@ class profile::nifi (
     action     => set,
     permission => [ 'user:logreader:r-x' ],
     require    => File[$log_directory],
+  }
+}
+```
+
+### NiFi state management
+
+This module configures NiFi to use `/opt/nifi/conf/state-management.xml`
+instead of the `./conf/state-management.xml` in the NiFi install directory.
+
+To override this, provide a `nifi_properties` class parameter which includes
+`nifi.state.management.configuration.file` pointing to your own file.
+
+```puppet
+class profile::nifi (
+  $custom_state_management => '/path/to/custom/state-management.xml',
+) {
+
+  class { 'nifi':
+    nifi_properties => {
+      'nifi.state.management.configuration.file' => $custom_state_management
+    }
+  }
+
+  file { $custom_state_management:
+    notify => Class['nifi::service'],
   }
 }
 ```

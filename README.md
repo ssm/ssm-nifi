@@ -1,15 +1,23 @@
-# nifi
+# Puppet module ssm-nifi
 
-#### Table of Contents
-
-1. [Description](#description)
-2. [Setup - The basics of getting started with nifi](#setup)
-    * [What nifi affects](#what-nifi-affects)
-    * [Setup requirements](#setup-requirements)
-    * [Beginning with nifi](#beginning-with-nifi)
-3. [Usage - Configuration options and additional functionality](#usage)
-4. [Limitations - OS compatibility, etc.](#limitations)
-5. [Development - Guide for contributing to the module](#development)
+- [Puppet module ssm-nifi](#puppet-module-ssm-nifi)
+  - [Description](#description)
+  - [Setup](#setup)
+    - [What nifi affects](#what-nifi-affects)
+    - [Setup Requirements](#setup-requirements)
+    - [Beginning with nifi](#beginning-with-nifi)
+  - [Usage](#usage)
+    - [Using the Puppet CA for TLS](#using-the-puppet-ca-for-tls)
+      - [Dependencies](#dependencies)
+      - [Profile](#profile)
+      - [Generate a user certificate](#generate-a-user-certificate)
+    - [Clustering NiFi](#clustering-nifi)
+      - [Authorizers](#authorizers)
+      - [Zookeeper](#zookeeper)
+    - [Managing upgrades](#managing-upgrades)
+    - [Managing logs](#managing-logs)
+  - [Limitations](#limitations)
+  - [Development](#development)
 
 ## Description
 
@@ -30,13 +38,13 @@ The module will create `/var/opt/nifi`, for persistent storage outside
 the software install root. This will also configure the following nifi
 properties to create directories under this path.
 
-* nifi.content.repository.directory.default
-* nifi.database.directory
-* nifi.documentation.working.directory
-* nifi.flowfile.repository.directory
-* nifi.nar.working.directory
-* nifi.provenance.repository.directory.default
-* nifi.web.jetty.working.directory
+- nifi.content.repository.directory.default
+- nifi.database.directory
+- nifi.documentation.working.directory
+- nifi.flowfile.repository.directory
+- nifi.nar.working.directory
+- nifi.provenance.repository.directory.default
+- nifi.web.jetty.working.directory
 
 The module will create `/var/log/nifi`, and configures NiFi to write log files
 to this directory. NiFi handles log rotation by itself. See [Managing
@@ -62,14 +70,14 @@ verify the integrity and authenticity of the downloaded files.
 
 Add dependency modules to your puppet environment:
 
-* camptocamp/systemd
-* puppet/archive
-* puppetlabs/inifile
-* puppetlabs/stdlib
+- camptocamp/systemd
+- puppet/archive
+- puppetlabs/inifile
+- puppetlabs/stdlib
 
 You need to ensure java 8 or 11 is installed. If in doubt, use this module:
 
-* puppetlabs/java
+- puppetlabs/java
 
 By default, NiFi 1.14.0 and later starts with a self-signed TLS certificate,
 listens on the `lo` interface only, and generates a random username and
@@ -246,7 +254,7 @@ Generate a certificate to use from your web browser.
 
 The name of this certificate will be added to the authorization file.
 
-```
+```console
 [root@puppet ~]# puppetserver ca generate --certname nifi-admin.users.example.com
 ```
 
@@ -257,7 +265,7 @@ make it look like an email address, it will not.
 Create a PKCS12 bundle from the key and certificate, download it to
 your workstation, and add it to your web browser.
 
-#### Clustering NiFi
+### Clustering NiFi
 
 Creating a NiFi cluster requires authorization rules for cluster nodes
 and zookeeper configuration.
@@ -348,6 +356,7 @@ In a three node cluster it should look like:
     </authorizer>
 </authorizers>
 ```
+
 #### Zookeeper
 
 The `./conf/zookeeper.properties` file is used in a multi node cluster

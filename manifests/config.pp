@@ -15,6 +15,8 @@ class nifi::config (
   Hash[
     Stdlib::Fqdn, Struct[{id => Integer[1,255]}]
   ] $cluster_nodes = {},
+  Stdlib::Fqdn $cluster_node_address = $trusted['certname'],
+  Stdlib::Port::Unprivileged $cluster_node_protocol_port = 11443,
 ) {
 
   $software_directory = "${install_root}/nifi-${version}"
@@ -26,6 +28,24 @@ class nifi::config (
   }.sort.join(',')
 
   $cluster_properties = {
+    'nifi.cluster.is.node'                                => true,
+    'nifi.cluster.node.address'                           => $cluster_node_address,
+    'nifi.cluster.node.protocol.port'                     => $cluster_node_protocol_port,
+    'nifi.zookeeper.connect_string'                       => $zookeeper_connect_string,
+    'nifi.state.management.embedded.zookeeper.start'      => true,
+    'nifi.state.management.embedded.zookeeper.properties' => "${config_directory}/zookeeper.properties",
+    'nifi.state.management.provider.cluster'              => 'zk-provider'
+  }
+
+  $standalone_properties = {
+    'nifi.cluster.is.node' => false,
+    'nifi.cluster.node.address' => '',
+    'nifi.cluster.node.protocol.port' => '',
+    'nifi.zookeeper.connect_string' => '',
+    'nifi.state.management.embedded.zookeeper.start' => false,
+    'nifi.state.management.provider.local' => 'local-provider'
+  }
+
   $path_properties = {
     'nifi.nar.working.directory'                   => "${var_directory}/work/nar/",
     'nifi.documentation.working.directory'         => "${var_directory}/work/docs/components",
@@ -37,7 +57,12 @@ class nifi::config (
     'nifi.state.management.configuration.file'     => "${config_directory}/state-management.xml",
   }
 
-  $_nifi_properties = $path_properties + $nifi_properties
+  if $cluster {
+    $_nifi_properties = $path_properties + $cluster_properties + $nifi_properties
+  }
+  else {
+    $_nifi_properties = $path_properties + $standalone_properties + $nifi_properties
+  }
 
   $_nifi_properties.each |String $key, String $value| {
     ini_setting { "nifi property ${key}":

@@ -23,6 +23,10 @@ describe 'Apache NiFi' do
     it { is_expected.to be_enabled }
   end
 
+  describe file('/var/opt/nifi/state/local') do
+    it { is_expected.to be_directory }
+  end
+
   describe file('/var/log/nifi') do
     it { is_expected.to be_directory }
   end

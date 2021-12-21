@@ -7,6 +7,8 @@ describe 'nifi::install' do
       let(:params) do
         {
           install_root: '/opt/nifi',
+          config_directory: '/opt/nifi/config',
+          log_directory: '/var/log/nifi',
           var_directory: '/var/opt/nifi',
           version: '1.0.0',
           download_url: 'http://localhost/nifi-1.0.0.tar.gz',

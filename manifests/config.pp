@@ -11,6 +11,10 @@ class nifi::config (
   String $user,
   String $group,
   String $version,
+  Boolean $cluster = false,
+  Hash[
+    Stdlib::Fqdn, Struct[{id => Integer[1,255]}]
+  ] $cluster_nodes = {},
 ) {
 
   $software_directory = "${install_root}/nifi-${version}"

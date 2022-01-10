@@ -68,7 +68,7 @@ class nifi::config (
     $_nifi_properties = $path_properties + $standalone_properties + $nifi_properties
   }
 
-  $_nifi_properties.each |String $key, String $value| {
+  $_nifi_properties.each |String $key, Variant[String,Integer] $value| {
     ini_setting { "nifi property ${key}":
       ensure  => present,
       path    => $nifi_properties_file,

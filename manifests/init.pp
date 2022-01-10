@@ -58,6 +58,17 @@
 # @param nifi_properties
 #   Hash of parameter key/values to be added to conf/nifi.properties.
 #
+# @param cluster
+#   If true, enables the built-in zookeeper cluster for shared configuration
+#   and state management. The cluster_nodes parameter is used to configure the
+#   zookeeper cluster, and nifi will connect to their local zookeper instance.
+#
+# @param cluster_nodes
+#   A hash of zookeeper cluster nodes and their ID. The ID must be an integer
+#   between 1 and 255, unique in the cluster, and must not be changed once set.
+#
+#  The hash must be structured like { 'fqdn.example.com' => { 'id' => 1 },... }
+#
 # @example Defaults
 #   include nifi
 #
@@ -66,6 +77,16 @@
 #     version           => 'x.y.z',
 #     download_url      => 'https://my.local.repo.example.com/apache/nifi/nifi-x.y.z.tar.gz',
 #     download_checksum => 'abcde...',
+#   }
+#
+# @example Configuring a NiFi cluster
+#   class { 'nifi':
+#     cluster       => true,
+#     cluster_nodes => {
+#       'nifi-1.example.com' => { 'id' => 1 },
+#       'nifi-2.example.com' => { 'id' => 2 },
+#       'nifi-3.example.com' => { 'id' => 3 },
+#     }
 #   }
 #
 class nifi (
@@ -83,6 +104,11 @@ class nifi (
   Stdlib::Absolutepath $var_directory = '/var/opt/nifi',
   Stdlib::Absolutepath $log_directory = '/var/log/nifi',
   Stdlib::Absolutepath $config_directory = '/opt/nifi/config',
+  Boolean $cluster = false,
+  Hash[
+    Stdlib::Fqdn, Struct[{id => Integer[1,255]}]
+  ] $cluster_nodes = {},
+  Optional[String] $initial_admin_identity = undef,
 ) {
 
   class { 'nifi::install':
@@ -107,6 +133,8 @@ class nifi (
     var_directory    => $var_directory,
     nifi_properties  => $nifi_properties,
     version          => $version,
+    cluster          => $cluster,
+    cluster_nodes    => $cluster_nodes,
   }
 
   class {'nifi::service':

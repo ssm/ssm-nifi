@@ -8,6 +8,7 @@ describe 'nifi::config' do
         {
           install_root: '/opt/nifi',
           version: '1.2.3',
+          config_directory: '/opt/nifi/config',
           var_directory: '/var/opt/nifi',
           user: 'nifi',
           group: 'nifi',

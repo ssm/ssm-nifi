@@ -100,12 +100,13 @@ class nifi (
   }
 
   class { 'nifi::config':
-    install_root    => $install_root,
-    user            => $user,
-    group           => $group,
-    var_directory   => $var_directory,
-    nifi_properties => $nifi_properties,
-    version         => $version,
+    install_root     => $install_root,
+    user             => $user,
+    group            => $group,
+    config_directory => $config_directory,
+    var_directory    => $var_directory,
+    nifi_properties  => $nifi_properties,
+    version          => $version,
   }
 
   class {'nifi::service':

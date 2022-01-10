@@ -108,6 +108,7 @@ class nifi (
   Hash[
     Stdlib::Fqdn, Struct[{id => Integer[1,255]}]
   ] $cluster_nodes = {},
+  Optional[String] $initial_admin_identity = undef,
 ) {
 
   class { 'nifi::install':

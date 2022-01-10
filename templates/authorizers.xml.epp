@@ -1,0 +1,32 @@
+<%- | Optional[String] $initial_admin_identity = undef,
+      Boolean $cluster,
+      Hash[Stdlib::Fqdn, Struct[{id => Integer[1]}]] $cluster_nodes,
+      Stdlib::Absolutepath $config_directory,
+    | -%>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+
+    This file is managed by puppet.
+
+-->
+<authorizers>
+    <authorizer>
+      <identifier>file-provider</identifier>
+      <class>org.apache.nifi.authorization.FileAuthorizer</class>
+      <property name="Authorizations File"><%= $config_directory %>/authorizations.xml</property>
+      <property name="Users File"><%= $config_directory %>/users.xml</property>
+      <property name="Legacy Authorized Users File"></property>
+
+      <%- if $initial_admin_identity { -%>
+      <property name="Initial Admin Identity"><%= $admin_identity %></property>
+      <%- } -%>
+      <%- if $cluster { -%>
+      <%-   $cluster_nodes.each | $cluster_node, $params | {
+              $node_dn = "CN=${cluster_node}"
+              $node_id = "Node Identity ${params['id']}"
+      -%>
+      <property name="<%= $node_id %>"><%= $node_dn %></property>
+      <%-   } -%>
+      <%- } -%>
+    </authorizer>
+</authorizers>

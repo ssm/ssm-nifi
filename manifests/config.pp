@@ -17,6 +17,7 @@ class nifi::config (
   ] $cluster_nodes = {},
   Stdlib::Fqdn $cluster_node_address = $trusted['certname'],
   Stdlib::Port::Unprivileged $cluster_node_protocol_port = 11443,
+  Optional[String] $initial_admin_identity = undef,
 ) {
 
   $software_directory = "${install_root}/nifi-${version}"
@@ -73,6 +74,21 @@ class nifi::config (
       setting => $key,
       value   => $value,
     }
+  }
+
+  $authorizers_properties = {
+    'cluster' =>  $cluster,
+    'cluster_nodes' => $cluster_nodes,
+    'config_directory' => $config_directory,
+    'initial_admin_identity' => $initial_admin_identity,
+  }
+
+  file { "${config_directory}/authorizers.xml":
+    ensure  => file,
+    content => epp('nifi/authorizers.xml.epp', $authorizers_properties),
+    owner   => 'root',
+    group   => $group,
+    mode    => '0640',
   }
 
   $state_management_properties = {

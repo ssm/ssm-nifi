@@ -30,7 +30,7 @@ class nifi::config (
   }.sort.join(',')
 
   $cluster_properties = {
-    'nifi.cluster.is.node'                                => true,
+    'nifi.cluster.is.node'                                => 'true',
     'nifi.cluster.node.address'                           => $cluster_node_address,
     'nifi.cluster.node.protocol.port'                     => $cluster_node_protocol_port,
 
@@ -41,7 +41,7 @@ class nifi::config (
   }
 
   $standalone_properties = {
-    'nifi.cluster.is.node' => false,
+    'nifi.cluster.is.node' => 'false',
     'nifi.cluster.node.address' => '',
     'nifi.cluster.node.protocol.port' => '',
     'nifi.zookeeper.connect_string' => '',

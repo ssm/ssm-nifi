@@ -7,16 +7,19 @@
     - [Setup Requirements](#setup-requirements)
     - [Beginning with nifi](#beginning-with-nifi)
   - [Usage](#usage)
-    - [Using the Puppet CA for TLS](#using-the-puppet-ca-for-tls)
+    - [Using a specific version of NiFi](#using-a-specific-version-of-nifi)
+    - [Hosting NiFi on a local repository](#hosting-nifi-on-a-local-repository)
+    - [A complex example using the Puppet CA for TLS](#a-complex-example-using-the-puppet-ca-for-tls)
       - [Dependencies](#dependencies)
       - [Profile](#profile)
       - [Generate a user certificate](#generate-a-user-certificate)
     - [Clustering NiFi](#clustering-nifi)
-      - [Authorizers](#authorizers)
-      - [Zookeeper](#zookeeper)
+    - [NiFi user authentication](#nifi-user-authentication)
+    - [NiFi user authorization](#nifi-user-authorization)
     - [Managing upgrades](#managing-upgrades)
     - [Managing logs](#managing-logs)
     - [NiFi state management](#nifi-state-management)
+  - [Notes and thoughts](#notes-and-thoughts)
   - [Limitations](#limitations)
   - [Development](#development)
 
@@ -32,8 +35,12 @@ dataflow automation software.
 This module will download the Apache NiFi tarball to `/var/tmp/`.
 Please make sure you have space for this file.
 
-The tarball will be unpacked to `/opt/nifi` by default, where it will
-require about the same disk space.
+The tarball will be unpacked to a subdirectory under `/opt/nifi` by default,
+where it will require about the same disk space. For ease of access, the
+symlink `/opt/nifi/current` will point to the managed nifi directory.
+
+NiFi defaults to store logs and state and configuration within the installation
+directory. This module changes this behaviour.
 
 The module will create `/var/opt/nifi`, for persistent storage outside
 the software install root. This will also configure the following nifi
@@ -50,6 +57,10 @@ properties to create directories under this path.
 The module will create `/var/log/nifi`, and configures NiFi to write log files
 to this directory. NiFi handles log rotation by itself. See [Managing
 logs](#managing-logs) for more information.
+
+The module will create `/opt/nifi/conf` to store puppet managed configuration
+files. The NiFi generated configuration files and the `flow.xml` configuration
+archive will also be stored here.
 
 ### Setup Requirements
 
@@ -88,16 +99,52 @@ further down in this README.
 
 ## Usage
 
-To download and install NiFi, include the module. This will download
-nifi, unpack it under `/opt/nifi/nifi-<version>`, and start the
-service with default configuration and storage locations.
+To download and install NiFi, include the module. This will download nifi,
+unpack it under `/opt/nifi/nifi-<version>`, and start the service with default
+configuration and storage locations.
+
+By default, NiFi is not available over the network. It will bind to `127.0.0.1`
+port `8443`, using HTTPS with a self signed certificate. To make NiFi available
+over the network, you will need to ensure it listens on an external interface.
+Set the property `nifi.web.https.host` to a hostname or an external IP address.
+To change the port number, set `nifi.web.https.port`.
+
+A minimal manifest for installing Java and NiFi, then making NiFi available
+over the network is:
 
 ```puppet
-include nifi
+class { 'java': }
+class { 'nifi':
+  nifi_properties => {
+    'nifi.web.https.host' => $trusted['certname'],
+  }
+}
+
+Class['java'] -> Class['nifi::service']
 ```
 
-To host a specific version of nifi locally, use the `download_url`,
-`download_checksum` and `version` parameters.
+### Using a specific version of NiFi
+
+This module installs a specific version of NiFi. If a newer version of NiFi has
+been released available, the older one will generally not be downloadable from
+the Apache download CDN site. You will need to adjust 'version' and the
+'download_checksum' parameters:
+
+```puppet
+class { 'nifi':
+  version           => 'x.y.z',
+  download_checksum => 'abcde...' # sha256 checksum
+}
+```
+
+The SHA256 checksum of the NiFi tar.gz is available on the [NiFi download
+page](https://nifi.apache.org/download.html).
+
+### Hosting NiFi on a local repository
+
+NiFi is a big download. Please consider hosting a copy locally for your own
+use. To use a local repository, set the `download_url`, `download_checksum` and
+`version` parameters.
 
 Example using puppet manifests:
 
@@ -138,7 +185,7 @@ class { 'nifi':
 
 (I recommend you use `hiera-eyaml` to store this somewhat securely.)
 
-### Using the Puppet CA for TLS
+### A complex example using the Puppet CA for TLS
 
 NiFi can use TLS certificates for authentication between nodes and for
 users. While NiFi provides a CA in the `nifi-toolkit` package, we can
@@ -168,54 +215,39 @@ class profile::nifi (
   $toolkit_checksum,
   Stdlib::Absolutepath $truststore = '/var/opt/nifi/nifi.ts',
   Stdlib::Absolutepath $keystore = '/var/opt/nifi/nifi.ks',
-  Stdlib::Absolutepath $hostprivkey = '/var/lib/puppet/ssl/private_keys/nifi-01.example.com.pem',
-  Stdlib::Absolutepath $hostcert = '/var/lib/puppet/ssl/certs/nifi-01.example.com.pem',
+  Stdlib::Absolutepath $hostprivkey = "/var/lib/puppet/ssl/private_keys/${trusted['certname']}.pem",
+  Stdlib::Absolutepath $hostcert = '/var/lib/puppet/ssl/certs/${trusted['certname']}.pem',
   Stdlib::Absolutepath $localcacert = '/var/lib/puppet/ssl/certs/ca.pem',
-  Stdlib::Absolutepath $config_resource_dir = '/opt/nifi/config-resources',
   String $storepassword = 'puppet',
 ) {
 
-  $url = "http://mirrors.ibiblio.org/apache/nifi/${version}/nifi-${version}-bin.tar.gz"
-  $toolkit_url = "http://mirrors.ibiblio.org/apache/nifi/${version}/nifi-toolkit-${version}-bin.tar.gz"
-
   class { 'java': }
   class { 'nifi':
-    download_checksum => $checksum,
-    download_url      => $url,
-    version           => $version,
     nifi_properties => {
-
-      # Site to Site properties
-      'nifi.remote.input.host'          => $trusted['certname'],
-      'nifi.remote.input.secure'        => 'true',
-      'nifi.remote.input.socket.port'   => '10443',
 
       # Web properties
       'nifi.web.https.host'             => $trusted['certname'],
       'nifi.web.https.port'             => '9443',
       'nifi.web.http.port'              => '',
 
-      # Security properties
+      # Keystore properties
       'nifi.security.keystore'          => $keystore,
       'nifi.security.keystorePasswd'    => $storepassword,
       'nifi.security.keystoreType'      => 'jks',
       'nifi.security.truststore'        => $truststore,
       'nifi.security.truststorePasswd'  => $storepassword,
       'nifi.security.truststoreType'    => 'jks',
-      'nifi.cluster.protocol.is.secure' => 'true',
 
-      # Host properties
-      'nifi.cluster.node.address'       => $trusted['certname'],
-      'nifi.cluster.node.protocol.port' => '11443',
-
-      # Path properties
-      'nifi.authorizer.configuration.file'  => "${config_resource_dir}/authorizers.xml",
-      'nifi.flow.configuration.file'        => "${config_resource_dir}/flow.xml.gz",
-      'nifi.flow.configuration.archive.dir' => "${config_resource_dir}/archive",
-
+      # Site to Site properties, used to communicate between NiFi instances.
+      # This port (as well as the https port) is used for the RAW protocol
+      # in a RemoteProcessGroup.
+      'nifi.remote.input.host'          => $trusted['certname'],
+      'nifi.remote.input.secure'        => 'true',
+      'nifi.remote.input.socket.port'   => '10443',
     }
   }
 
+  # The nifi toolkit is used for maintenance and automation.
   class { 'nifi_toolkit':
     download_url      => $toolkit_url,
     download_checksum => $toolkit_checksum,
@@ -268,116 +300,115 @@ your workstation, and add it to your web browser.
 
 ### Clustering NiFi
 
-Creating a NiFi cluster requires authorization rules for cluster nodes
-and zookeeper configuration.
+To create a cluster, set the `cluster` class parameter to true, and add cluster
+members to the `cluster_nodes` hash. This configures the cluster to use
+zookeeper for shared state.
 
-#### Authorizers
+Nifi requires you to set a `nifi.sensitive.props.key` on all cluster nodes.
 
-Provision a `/opt/nifi/current/conf/authorizers.xml` configuration
-files to your NiFi nodes
+If you cluster nifi and also override the `authorizers.xml` file, ensure you
+also include the cluster nodes in this file.
 
-This file adds the certificates of the cluster nodes, as well as the
-certificate for the initial admin. Once the initial admin logs in,
-they can manage users and roles in the web interface.
+Also, you need to configure TLS:
 
-If this is created from a template, it needs the `admin_identity`,
-`node identities` and path to the `config_resource_dir` used above.
+- Generate TLS certificates
+- Set the property `nifi.cluster.protocol.is.secure = true`
 
-Example authorization configuration rules using TLS certificates for
-cluster nodes and admin web access:
+Or continue without TLS:
 
-The path to `authorizers.xml` is configured with the
-nifi.authorizer.configuration.file property. Default is
-`./conf/authorizers.xml`, but it should be set outside the
-installation directory to make upgrades easier.
+- Set the property `nifi.web.http.port`
 
 ```puppet
-file { '/opt/nifi/config-resources/authorizers.xml':
-  content => epp('profile/nifi/authorizers.xml.epp', {
-    'admin_identity'      => $admin_identity,
-    'cluster_nodes'       => $cluster_nodes,
-    'config_resource_dir' => $config_resource_dir,
-  }),
+class profile::nifi {
+  class { 'java': }
+  class { 'nifi':
+    cluster         => true,
+    nifi_properties => {
+      'nifi.sensitive.props.key' => 'a shared secret for encrypting properties',
+    },
+    cluster_nodes   => {
+      'node1.example.com' => { 'id' => 1 },
+      'node2.example.com' => { 'id' => 2 },
+      'node3.example.com' => { 'id' => 3 },
+    }
+  }
+
+  Class['java'] -> Class['nifi::service']
 }
 ```
 
+This is an incomplete example. Choose TLS (please), and see the section in this
+README about using Puppet CA for TLS for ideas.
+
+### NiFi user authentication
+
+User authentication is managed using the
+`nifi.login.identity.providers.configuration.file` and
+`nifi.security.user.login.identity.provider` properties. On a fresh install,
+NiFi uses the `single-user-provider`. A random username and password is created
+and written to the `nifi-app.log` file. This is documented at
+https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html#user_authentication
+
+This module does not manage login identity provider configuration. If you want
+to connect your NiFi to Active Directory or other LDAP server, you need to
+manage this property and provide a file.
+
 ```puppet
-<%- | String $admin_identity,
-      Hash[Stdlib::Fqdn, Struct[{id => Integer[1]}]] $cluster_nodes,
-      Stdlib::Absolutepath $config_resource_dir,
-    | -%>
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--
+class profile::nifi {
+  $login_identity_providers => '/opt/nifi/conf/custom-login-identity-providers.xml'
 
-    This file is managed by puppet.
+  class nifi {
+    nifi_properties => {
+      nifi.login.identity.providers.configuration.file => $login_identity_providers,
+      nifi.security.user.login.identity.provider       => 'my-custom-identity-provider',
+    }
+  }
 
--->
-<authorizers>
-    <authorizer>
-      <identifier>file-provider</identifier>
-      <class>org.apache.nifi.authorization.FileAuthorizer</class>
-      <property name="Authorizations File"><%= $config_resource_dir %>/authorizations.xml</property>
-      <property name="Users File"><%= $config_resource_dir %>/users.xml</property>
-      <property name="Legacy Authorized Users File"></property>
-
-      <property name="Initial Admin Identity"><%= $admin_identity %></property>
-
-      <%- $cluster_nodes.each | $cluster_node, $params | {
-            $node_dn = "CN=${cluster_node}"
-            $node_id = "Node Identity ${params['id']}"
-      -%>
-      <property name="<%= $node_id %>"><%= $node_dn %></property>
-      <%- } -%>
-    </authorizer>
-</authorizers>
+  $template_params = {
+    # [...]
+  }
+  file { $login_identity_providers:
+    content => epp('profile/nifi/my-custom-login-identity-providers.epp, $template_params')
+    # [...]
+  }
+}
 ```
 
-In a three node cluster it should look like:
+### NiFi user authorization
 
-```xml
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<!--
+Authorization is managed using the `nifi.authorizer.configuration.file` and
+`nifi.security.user.authorizer` properties. This is documented at
+'https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html#multi-tenant-authorization'
 
-    This file is managed by puppet.
+This module manages `/opt/nifi/conf/authorizers.xml` to support clustering, it
+is otherwise similar to the default content.
 
--->
-<authorizers>
-    <authorizer>
-      <identifier>file-provider</identifier>
-      <class>org.apache.nifi.authorization.FileAuthorizer</class>
-      <property name="Authorizations File">/opt/nifi/config-resources/authorizations.xml</property>
-      <property name="Users File">/opt/nifi/config-resources/users.xml</property>
-      <property name="Legacy Authorized Users File"></property>
+You can override this file using a collector (using the `File <| ... |> {}`
+syntax) to use your own template by overriding the `content` parameter of the
+file managed by the nifi module.
 
-      <property name="Initial Admin Identity">CN=admin.users.example.com</property>
+```puppet
+class profile::nifi {
+  $authorizers => '/opt/nifi/conf/authorizers.xml'
 
-      <property name="Node Identity 1">CN=node1.example.com</property>
-      <property name="Node Identity 2">CN=node2.example.com</property>
-      <property name="Node Identity 3">CN=node3.example.com</property>
-    </authorizer>
-</authorizers>
+  class { 'nifi':
+    nifi_properties => {
+      nifi.authorizer.configuration.file => $authorizers, # module default, added for clarity
+      nifi.security.user.authorizer      => 'my-custom-authorizer-provider',
+    }
+  }
+
+  $template_params = {
+    # [...]
+  }
+  File <| title == $authorizers |> {
+    content => epp('profile/nifi/my-custom-authorizers.epp, $template_params')
+  }
+}
 ```
 
-#### Zookeeper
-
-The `./conf/zookeeper.properties` file is used in a multi node cluster
-
-In a three-node cluster it should look like:
-
-```ini
-# Managed by Puppet
-
-initLimit=10
-autopurge.purgeInterval=24
-syncLimit=5
-tickTime=2000
-dataDir=/var/opt/nifi/state/zookeeper
-autopurge.snapRetainCount=30
-
-server.1=node1.example.com:2888:3888;2181
-server.2=node2.example.com:2888:3888;2181
-server.3=node3.example.com:2888:3888;2181
-```
+Note: The example above assumes that the module parameter
+`nifi::config_directory` is left at its default `/opt/nifi/conf`.
 
 ### Managing upgrades
 
@@ -424,10 +455,13 @@ class profile::nifi (
 ### NiFi state management
 
 This module configures NiFi to use `/opt/nifi/conf/state-management.xml`
-instead of the `./conf/state-management.xml` in the NiFi install directory.
+instead of the `./conf/state-management.xml` in the NiFi install directory. The
+values in this file are NiFi defaults, apart from the local state management
+directory or the cluster state management connect string.
 
-To override this, provide a `nifi_properties` class parameter which includes
-`nifi.state.management.configuration.file` pointing to your own file.
+To override this file with your own values, provide a `nifi_properties` class
+parameter which includes `nifi.state.management.configuration.file` pointing to
+your own file.
 
 ```puppet
 class profile::nifi (
@@ -446,17 +480,34 @@ class profile::nifi (
 }
 ```
 
+## Notes and thoughts
+
+About the ZooKeeper connection string. The [NiFi administration guide] says "This should containe a list of all ZooKeeper instances in the ZooKeeper quorum", while the [ZooKeeper overview] says "a client connects to one node". This module follows assumes that the NiFi cluster runs its own ZooKeeper and lets any node connect as client to any other node.
+
+Java Keystore: [NiFi administration guide] says "JKS is the preferred type",
+while the "keytool" utility provided by the java package says "JKS is
+deprecated, use PKCS12".
+
+[NiFi administration guide]: https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html
+[ZooKeeper overview]: https://zookeeper.apache.org/doc/current/zookeeperOver.html
+
+```pre
+  nifi 1          nifi 2          nifi 3
+    |               |               |
+zookeeper 1 --- zookeeper 2 --- zookeeper 3
+```
+
 ## Limitations
 
-This module is under development, and therefore somewhat light on
-functionality.
+This module is under development, and therefore somewhat light on functionality
+and sensible defaults.
 
-Configuration outside `nifi.properties` are not managed yet. These can
-be managed outside the module with `file` resources.
+State management: This module configures rudimentary NiFi state management for
+local state and with zookeeper for cluster state. The `redis` method is not
+managed with this module.
 
-This module configures rudimentart NiFi state management with local
-file method. The `zookeeper` and `redis` methods are not managed with
-this module.
+To manage more configuration files, add a file resource of your own, and set
+the related property using the `nifi_properties` class parameter.
 
 ## Development
 

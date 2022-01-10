@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
+### Changed
+
+- Install NiFi version 1.15.2 by default
+
 ### Added
 
 - Set NiFi log directory to `/var/log/nifi`.

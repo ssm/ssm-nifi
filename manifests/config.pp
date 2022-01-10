@@ -23,6 +23,7 @@ class nifi::config (
   $nifi_properties_file = "${software_directory}/conf/nifi.properties"
 
   $zookeeper_client_port = 2181
+  $zookeeper_state_directory = "${var_directory}/state/zookeeper"
   $zookeeper_connect_string = $cluster_nodes.map |$key, $value| {
     "${key}:${zookeeper_client_port}"
   }.sort.join(',')
@@ -31,8 +32,9 @@ class nifi::config (
     'nifi.cluster.is.node'                                => true,
     'nifi.cluster.node.address'                           => $cluster_node_address,
     'nifi.cluster.node.protocol.port'                     => $cluster_node_protocol_port,
-    'nifi.zookeeper.connect_string'                       => $zookeeper_connect_string,
-    'nifi.state.management.embedded.zookeeper.start'      => true,
+
+    'nifi.zookeeper.connect.string'                       => $zookeeper_connect_string,
+    'nifi.state.management.embedded.zookeeper.start'      => 'true',
     'nifi.state.management.embedded.zookeeper.properties' => "${config_directory}/zookeeper.properties",
     'nifi.state.management.provider.cluster'              => 'zk-provider'
   }
@@ -42,7 +44,7 @@ class nifi::config (
     'nifi.cluster.node.address' => '',
     'nifi.cluster.node.protocol.port' => '',
     'nifi.zookeeper.connect_string' => '',
-    'nifi.state.management.embedded.zookeeper.start' => false,
+    'nifi.state.management.embedded.zookeeper.start' => 'false',
     'nifi.state.management.provider.local' => 'local-provider'
   }
 
@@ -87,8 +89,15 @@ class nifi::config (
   }
 
   $zookeeper_properties = {
-    'zookeeper_state_directory' => "${config_directory}/state/zookeeper",
+    'zookeeper_state_directory' => $zookeeper_state_directory,
     'cluster_nodes' => $cluster_nodes,
+  }
+
+  file { "${var_directory}/state":
+    ensure => directory,
+    owner  => $user,
+    group  => $group,
+    mode   => '0750',
   }
 
   if $cluster {
@@ -96,6 +105,21 @@ class nifi::config (
       ensure  => file,
       content => epp('nifi/zookeeper.properties.epp', $zookeeper_properties),
       owner   => 'root',
+      group   => $group,
+      mode    => '0640',
+    }
+    file { $zookeeper_state_directory:
+      ensure => directory,
+      owner  => $user,
+      group  => $group,
+      mode   => '0750',
+    }
+
+    $zookeeper_node_id = $cluster_nodes[$cluster_node_address]['id']
+    file { "${zookeeper_state_directory}/myid":
+      ensure  => file,
+      content => "${zookeeper_node_id}\n",
+      owner   => $user,
       group   => $group,
       mode    => '0640',
     }

@@ -30,6 +30,7 @@ class nifi::config (
   }.sort.join(',')
 
   $cluster_properties = {
+    'nifi.cluster.protocol.is.secure'                     => 'true',
     'nifi.cluster.is.node'                                => 'true',
     'nifi.cluster.node.address'                           => $cluster_node_address,
     'nifi.cluster.node.protocol.port'                     => $cluster_node_protocol_port,

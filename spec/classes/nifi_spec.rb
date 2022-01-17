@@ -13,16 +13,21 @@ describe 'nifi' do
       end
 
       context 'with cluster => true' do
-        let(:params) {
+        let(:params) do
           {
             cluster: true,
             cluster_nodes: {
               'node1.example.com': { id: 1 },
               'node2.example.com': { id: 2 },
               'node3.example.com': { id: 3 },
-            }
+            },
+            nifi_properties: {
+              'test.boolean': true,
+              'test.integer': 42,
+              'test.string': 'I like words',
+            },
           }
-        }
+        end
 
         it { is_expected.to compile }
       end

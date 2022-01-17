@@ -99,7 +99,7 @@ class nifi (
   String $group = 'nifi',
   Integer $service_limit_nofile = 50000,
   Integer $service_limit_nproc = 10000,
-  Hash $nifi_properties = {},
+  Hash[String,Variant[String,Integer,Boolean]] $nifi_properties = {},
   Stdlib::Absolutepath $install_root = '/opt/nifi',
   Stdlib::Absolutepath $var_directory = '/var/opt/nifi',
   Stdlib::Absolutepath $log_directory = '/var/log/nifi',

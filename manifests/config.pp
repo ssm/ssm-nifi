@@ -7,7 +7,6 @@ class nifi::config (
   Stdlib::Absolutepath $install_root,
   Stdlib::Absolutepath $var_directory,
   Stdlib::Absolutepath $config_directory,
-  Hash $nifi_properties,
   String $user,
   String $group,
   String $version,
@@ -18,6 +17,7 @@ class nifi::config (
   Stdlib::Fqdn $cluster_node_address = $trusted['certname'],
   Stdlib::Port::Unprivileged $cluster_node_protocol_port = 11443,
   Optional[String] $initial_admin_identity = undef,
+  Hash[String,Variant[String,Integer,Boolean]] $nifi_properties = {},
 ) {
 
   $software_directory = "${install_root}/nifi-${version}"
@@ -68,7 +68,7 @@ class nifi::config (
     $_nifi_properties = $path_properties + $standalone_properties + $nifi_properties
   }
 
-  $_nifi_properties.each |String $key, Variant[String,Integer] $value| {
+  $_nifi_properties.each |String $key, Variant[Boolean,String,Integer] $value| {
     ini_setting { "nifi property ${key}":
       ensure  => present,
       path    => $nifi_properties_file,

@@ -484,6 +484,12 @@ class profile::nifi (
 
 About the ZooKeeper connection string. The [NiFi administration guide] says "This should containe a list of all ZooKeeper instances in the ZooKeeper quorum", while the [ZooKeeper overview] says "a client connects to one node". This module follows assumes that the NiFi cluster runs its own ZooKeeper and lets any node connect as client to any other node.
 
+```pre
+  nifi 1          nifi 2          nifi 3
+    |               |               |
+zookeeper 1 --- zookeeper 2 --- zookeeper 3
+```
+
 Java Keystore: [NiFi administration guide] says "JKS is the preferred type",
 while the "keytool" utility provided by the java package says "JKS is
 deprecated, use PKCS12".
@@ -491,11 +497,6 @@ deprecated, use PKCS12".
 [NiFi administration guide]: https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html
 [ZooKeeper overview]: https://zookeeper.apache.org/doc/current/zookeeperOver.html
 
-```pre
-  nifi 1          nifi 2          nifi 3
-    |               |               |
-zookeeper 1 --- zookeeper 2 --- zookeeper 3
-```
 
 ## Limitations
 

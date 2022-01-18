@@ -21,16 +21,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `config_directory` parameter. This is used for configuration files intended
   to survive an upgrade of NiFi.
 - Manage state management configuration file `state-management.xml` in the
-  `config_directory`.  See [README.md] to use your own state management
+  `config_directory`.  See [README](README.md) to use your own state management
   configuration.
 - Manage authorizations configuration file `authorizers.xml` in the
   `config_directory` to add cluster nodes and optionally an initial admin
-  identity.  See [README.md] for how to use your own authorization
+  identity.  See [README](README.md) for how to use your own authorization
   configuration.
 - Manage a NiFi cluster with the `cluster` and `cluster_nodes` parameters. This
   enables the built-in zookeeper for cluster state management as well as
   authorization for cluster nodes. NiFi clustering with this module assumes you
-  have a source of TLS keys, certificates and CA trust. See [README.md] for
+  have a source of TLS keys, certificates and CA trust. See [README](README.md) for
   configuring a cluster.
 
 ## [0.6.0] - 2021-12-20

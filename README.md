@@ -9,9 +9,7 @@
   - [Usage](#usage)
     - [Using a specific version of NiFi](#using-a-specific-version-of-nifi)
     - [Hosting NiFi on a local repository](#hosting-nifi-on-a-local-repository)
-    - [A complex example using the Puppet CA for TLS](#a-complex-example-using-the-puppet-ca-for-tls)
-      - [Dependencies](#dependencies)
-      - [Profile](#profile)
+    - [Example: Configuring TLS](#example-configuring-tls)
       - [Generate a user certificate](#generate-a-user-certificate)
     - [Clustering NiFi](#clustering-nifi)
     - [NiFi user authentication](#nifi-user-authentication)
@@ -185,101 +183,58 @@ class { 'nifi':
 
 (I recommend you use `hiera-eyaml` to store this somewhat securely.)
 
-### A complex example using the Puppet CA for TLS
 
-NiFi can use TLS certificates for authentication between nodes and for
-users. While NiFi provides a CA in the `nifi-toolkit` package, we can
-use the Puppet CA for this.
+### Example: Configuring TLS
 
-Managing this is on the roadmap for this module. For now, this can be
-handled in the profile which loads the nifi class.
+NiFi can use TLS for traffic encryption as well as authentication. Providing
+the TLS certificate and key is outside the scope of this module.
 
-#### Dependencies
+This example assumes you have certificates and keys stored under /etc/pki/tls,
+and use the system CA trust store.
 
-Add the `puppetlabs-java_ks` module to your environment to manage the
-Java keystore and truststore used by NiFi.
-
-#### Profile
-
-Make a nifi profile, which glues everything toghether.
-
-In this example the TLS key and certificate are class parameters. You
-can use Hiera for this, but I encourage you to make a fact for this.
-It will be useful for all other managed infrastructure that uses TLS,
-like metrics and logging.
+Add the `puppetlabs-java_ks` module to your environment to manage the Java
+keystore used by NiFi.
 
 ```puppet
 class profile::nifi (
-  $version,
-  $checksum,
-  $toolkit_checksum,
-  Stdlib::Absolutepath $truststore = '/var/opt/nifi/nifi.ts',
-  Stdlib::Absolutepath $keystore = '/var/opt/nifi/nifi.ks',
-  Stdlib::Absolutepath $hostprivkey = "/var/lib/puppet/ssl/private_keys/${trusted['certname']}.pem",
-  Stdlib::Absolutepath $hostcert = '/var/lib/puppet/ssl/certs/${trusted['certname']}.pem',
-  Stdlib::Absolutepath $localcacert = '/var/lib/puppet/ssl/certs/ca.pem',
-  String $storepassword = 'puppet',
+  Stdlib::Fqdn $hostname = $trusted['certname'],
+  Sensitive[String] $keystorepassword = 'changeme',
 ) {
 
+  $hostcert    = "/etc/pki/tls/certs/${hostname}.pem"
+  $hostprivkey = "/etc/pki/tls/private/${hostname}.pem"
+
   class { 'java': }
+
   class { 'nifi':
     nifi_properties => {
 
       # Web properties
-      'nifi.web.https.host'             => $trusted['certname'],
-      'nifi.web.https.port'             => '9443',
-      'nifi.web.http.port'              => '',
+      'nifi.web.https.host'             => $hostname,
 
-      # Keystore properties
-      'nifi.security.keystore'          => $keystore,
-      'nifi.security.keystorePasswd'    => $storepassword,
+      # TLS properties
+      'nifi.security.keystore'          => '/opt/nifi/config/kesystore.jks',
       'nifi.security.keystoreType'      => 'jks',
-      'nifi.security.truststore'        => $truststore,
-      'nifi.security.truststorePasswd'  => $storepassword,
+      'nifi.security.keystorePasswd'    => $keystorepassword,
+
+      'nifi.security.truststore'        => '/etc/pki/ca-trust/extracted/java/cacerts',
       'nifi.security.truststoreType'    => 'jks',
-
-      # Site to Site properties, used to communicate between NiFi instances.
-      # This port (as well as the https port) is used for the RAW protocol
-      # in a RemoteProcessGroup.
-      'nifi.remote.input.host'          => $trusted['certname'],
-      'nifi.remote.input.secure'        => 'true',
-      'nifi.remote.input.socket.port'   => '10443',
+      'nifi.security.truststorePasswd'  => '',
     }
-  }
-
-  # The nifi toolkit is used for maintenance and automation.
-  class { 'nifi_toolkit':
-    download_url      => $toolkit_url,
-    download_checksum => $toolkit_checksum,
-    version           => $version,
   }
 
   Package['java'] -> Service['nifi.service']
 
-  Java_ks {
-    ensure   => latest,
-    password => $storepassword,
-    require  => Class['nifi::config'],
-    before   => Class['nifi::service'],
-  }
-
-  java_ks { 'nifi:truststore':
-    target       => $truststore,
-    certificate  => $localcacert,
-    trustcacerts => true,
-  }
-
-  java_ks { 'nifi:keystore':
-    target      => $keystore,
+  java_ks { "${hostname}:/opt/nifi/config/keystore.jks":
+    ensure      => latest,
+    password    => $keystorepassword,
     certificate => $hostcert,
     private_key => $hostprivkey,
+    require     => Class['nifi::config'],
+    before      => Class['nifi::service'],
   }
 }
 ```
-
-As soon as this is active, nifi will listens on TLS on port 9443, and
-anonymous access to NiFi is disabled. You will need to generate a key
-on the puppet master for your initial administrative user.
 
 #### Generate a user certificate
 
@@ -337,8 +292,9 @@ class profile::nifi {
 }
 ```
 
-This is an incomplete example. Choose TLS (please), and see the section in this
-README about using Puppet CA for TLS for ideas.
+In addition to the clustering parameters you need to [add TLS
+certificates](#example-configuring-tls) from a trusted Certificate Authority
+for cluster communication.
 
 ### NiFi user authentication
 

@@ -10,7 +10,6 @@
     - [Using a specific version of NiFi](#using-a-specific-version-of-nifi)
     - [Hosting NiFi on a local repository](#hosting-nifi-on-a-local-repository)
     - [Example: Configuring TLS](#example-configuring-tls)
-      - [Generate a user certificate](#generate-a-user-certificate)
     - [Clustering NiFi](#clustering-nifi)
     - [NiFi user authentication](#nifi-user-authentication)
     - [NiFi user authorization](#nifi-user-authorization)
@@ -235,23 +234,6 @@ class profile::nifi (
   }
 }
 ```
-
-#### Generate a user certificate
-
-Generate a certificate to use from your web browser.
-
-The name of this certificate will be added to the authorization file.
-
-```console
-[root@puppet ~]# puppetserver ca generate --certname nifi-admin.users.example.com
-```
-
-Note that puppetserver has limitations on what the certificate name
-can contain. If you make it look like a hostname, it will work. If you
-make it look like an email address, it will not.
-
-Create a PKCS12 bundle from the key and certificate, download it to
-your workstation, and add it to your web browser.
 
 ### Clustering NiFi
 

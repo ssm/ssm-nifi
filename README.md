@@ -124,8 +124,8 @@ Class['java'] -> Class['nifi::service']
 
 This module installs a specific version of NiFi. If a newer version of NiFi has
 been released available, the older one will generally not be downloadable from
-the Apache download CDN site. You will need to adjust 'version' and the
-'download_checksum' parameters:
+the Apache download CDN site. You will need to adjust the module parameters
+`version` and `download_checksum`:
 
 ```puppet
 class { 'nifi':

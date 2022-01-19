@@ -79,8 +79,8 @@ verify the integrity and authenticity of the downloaded files.
 
 Add dependency modules to your puppet environment:
 
-- camptocamp/systemd
 - puppet/archive
+- puppet/systemd
 - puppetlabs/inifile
 - puppetlabs/stdlib
 

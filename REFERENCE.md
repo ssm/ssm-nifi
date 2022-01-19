@@ -22,6 +22,8 @@
 
 Install, configure and run Apache NiFi
 
+ The hash must be structured like { 'fqdn.example.com' => { 'id' => 1 },... }
+
 #### Examples
 
 ##### Defaults
@@ -37,6 +39,19 @@ class { 'nifi':
   version           => 'x.y.z',
   download_url      => 'https://my.local.repo.example.com/apache/nifi/nifi-x.y.z.tar.gz',
   download_checksum => 'abcde...',
+}
+```
+
+##### Configuring a NiFi cluster
+
+```puppet
+class { 'nifi':
+  cluster       => true,
+  cluster_nodes => {
+    'nifi-1.example.com' => { 'id' => 1 },
+    'nifi-2.example.com' => { 'id' => 2 },
+    'nifi-3.example.com' => { 'id' => 3 },
+  }
 }
 ```
 
@@ -56,7 +71,11 @@ The following parameters are available in the `nifi` class:
 * [`install_root`](#install_root)
 * [`var_directory`](#var_directory)
 * [`log_directory`](#log_directory)
+* [`config_directory`](#config_directory)
 * [`nifi_properties`](#nifi_properties)
+* [`cluster`](#cluster)
+* [`cluster_nodes`](#cluster_nodes)
+* [`initial_admin_identity`](#initial_admin_identity)
 
 ##### <a name="version"></a>`version`
 
@@ -66,7 +85,7 @@ The version of Apache NiFi. This must match the version in the
 tarball. This is used for managing files, directories and paths in
 the service.
 
-Default value: `'1.15.1'`
+Default value: `'1.15.2'`
 
 ##### <a name="user"></a>`user`
 
@@ -92,7 +111,7 @@ Data type: `String`
 
 Where to download the binary installation tarball from.
 
-Default value: `'https://dlcdn.apache.org/nifi/1.15.1/nifi-1.15.1-bin.tar.gz'`
+Default value: `"https://dlcdn.apache.org/nifi/${version}/nifi-${version}-bin.tar.gz"`
 
 ##### <a name="download_checksum"></a>`download_checksum`
 
@@ -101,7 +120,7 @@ Data type: `String`
 The expected checksum of the downloaded tarball. This is used for
 verifying the integrity of the downloaded tarball.
 
-Default value: `'dd2d99dee4bba61aa4e2c977297937301a23dd296ecfa8f13d5863054ccde512'`
+Default value: `'8f3c4f9e3ca4b96dcee73e6a0bf4c3e7c4bd77ebecbec835a77bc53a8bfb8636'`
 
 ##### <a name="download_checksum_type"></a>`download_checksum_type`
 
@@ -166,11 +185,50 @@ deletion.
 
 Default value: `'/var/log/nifi'`
 
+##### <a name="config_directory"></a>`config_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+Directory for NiFi version independent configuration files to be kept
+across NiFi version upgrades. This is used in addition to the "./conf"
+directory within each NiFi installation.
+
+Default value: `'/opt/nifi/config'`
+
 ##### <a name="nifi_properties"></a>`nifi_properties`
 
-Data type: `Hash`
+Data type: `Hash[String,Variant[String,Integer,Boolean]]`
 
 Hash of parameter key/values to be added to conf/nifi.properties.
 
 Default value: `{}`
+
+##### <a name="cluster"></a>`cluster`
+
+Data type: `Boolean`
+
+If true, enables the built-in zookeeper cluster for shared configuration
+and state management. The cluster_nodes parameter is used to configure the
+zookeeper cluster, and nifi will connect to their local zookeper instance.
+
+Default value: ``false``
+
+##### <a name="cluster_nodes"></a>`cluster_nodes`
+
+Data type: `Hash[
+    Stdlib::Fqdn, Struct[{id => Integer[1,255]}]
+  ]`
+
+A hash of zookeeper cluster nodes and their ID. The ID must be an integer
+between 1 and 255, unique in the cluster, and must not be changed once set.
+
+Default value: `{}`
+
+##### <a name="initial_admin_identity"></a>`initial_admin_identity`
+
+Data type: `Optional[String]`
+
+
+
+Default value: ``undef``
 

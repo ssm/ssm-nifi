@@ -182,7 +182,6 @@ class { 'nifi':
 
 (I recommend you use `hiera-eyaml` to store this somewhat securely.)
 
-
 ### Example: Configuring TLS
 
 NiFi will generate a self-signed TLS certificate by default.
@@ -294,7 +293,7 @@ User authentication is managed using the
 `nifi.security.user.login.identity.provider` properties. On a fresh install,
 NiFi uses the `single-user-provider`. A random username and password is created
 and written to the `nifi-app.log` file. This is documented at
-https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html#user_authentication
+<https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html#user_authentication>
 
 This module does not manage login identity provider configuration. If you want
 to connect your NiFi to Active Directory or other LDAP server, you need to
@@ -443,7 +442,6 @@ deprecated, use PKCS12".
 
 [NiFi administration guide]: https://nifi.apache.org/docs/nifi-docs/html/administration-guide.html
 [ZooKeeper overview]: https://zookeeper.apache.org/doc/current/zookeeperOver.html
-
 
 ## Limitations
 

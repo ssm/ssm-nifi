@@ -1,5 +1,5 @@
 <% |
-   Stdlib::Absolutepath $zookeeper_state_directory,
+   Stdlib::Absolutepath $state_directory,
    Hash $cluster_nodes,
    Stdlib::Port::Unprivileged $quorum_port = 2888,
    Stdlib::Port::Unprivileged $election_port = 3888,
@@ -9,7 +9,7 @@ initLimit=10
 autopurge.purgeInterval=24
 syncLimit=5
 tickTime=2000
-dataDir=<%= $zookeeper_state_directory %>
+dataDir=<%= $state_directory %>
 autopurge.snapRetainCount=30
 
 <% $cluster_nodes.each |$key, $value| { -%>

@@ -106,7 +106,7 @@ class nifi::config (
   }
 
   $zookeeper_properties = {
-    'zookeeper_state_directory' => $zookeeper_state_directory,
+    'state_directory' => $zookeeper_state_directory,
     'cluster_nodes' => $cluster_nodes,
   }
 

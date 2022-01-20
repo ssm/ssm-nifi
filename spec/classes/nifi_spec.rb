@@ -25,6 +25,7 @@ describe 'nifi' do
               'test.boolean': true,
               'test.integer': 42,
               'test.string': 'I like words',
+              'test.sensitive': sensitive('I like sensitive words'),
             },
           }
         end

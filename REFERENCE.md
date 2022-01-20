@@ -75,6 +75,9 @@ The following parameters are available in the `nifi` class:
 * [`nifi_properties`](#nifi_properties)
 * [`cluster`](#cluster)
 * [`cluster_nodes`](#cluster_nodes)
+* [`zookeeper_client_port`](#zookeeper_client_port)
+* [`zookeeper_secure_client_port`](#zookeeper_secure_client_port)
+* [`zookeeper_use_secure_client_port`](#zookeeper_use_secure_client_port)
 * [`initial_admin_identity`](#initial_admin_identity)
 
 ##### <a name="version"></a>`version`
@@ -223,6 +226,45 @@ A hash of zookeeper cluster nodes and their ID. The ID must be an integer
 between 1 and 255, unique in the cluster, and must not be changed once set.
 
 Default value: `{}`
+
+##### <a name="zookeeper_client_port"></a>`zookeeper_client_port`
+
+Data type: `Stdlib::Port::Unprivileged`
+
+When clustering Nifi, this port is used by NiFi clustering and state
+management. This is used for unencrypted communication between NiFi
+zookeeper client and the embedded zookeeper server.
+
+Depending on the module parameter `zookeeper_use_secure_client_port`,
+NiFi will use either this port or the port controlled by the parameter
+`zookeeper_secure_client_port`.
+
+Default value: `2181`
+
+##### <a name="zookeeper_secure_client_port"></a>`zookeeper_secure_client_port`
+
+Data type: `Stdlib::Port::Unprivileged`
+
+When clustering Nifi, this port is used by NiFi clustering and state
+management. This is used for encrypted communication between NiFi
+zookeeper client and the embedded zookeeper server.
+
+Depending on the module parameter `zookeeper_use_secure_client_port`,
+NiFi will use either this port or the port controlled by the parameter
+`zookeeper_client_port`.
+
+Default value: `2281`
+
+##### <a name="zookeeper_use_secure_client_port"></a>`zookeeper_use_secure_client_port`
+
+Data type: `Boolean`
+
+Controls if the NiFi cluster will use TLS to connnect to the embedded zookeeper.
+If true, NiFi will use TLS and connect to the `zookeeper_secure_client_port`.
+If false, NiFi will use cleartext communication to connect to zookeeper on the
+`zookeeper_client_port`.
+
+Default value: ``true``
 
 ##### <a name="initial_admin_identity"></a>`initial_admin_identity`
 

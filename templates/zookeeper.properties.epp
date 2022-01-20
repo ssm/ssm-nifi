@@ -4,7 +4,12 @@
    Stdlib::Port::Unprivileged $quorum_port = 2888,
    Stdlib::Port::Unprivileged $election_port = 3888,
    Stdlib::Port::Unprivileged $client_port = 2181,
+   Stdlib::Port::Unprivileged $secure_client_port = 2281,
+   Boolean $use_secure_client_port = true,
    | -%>
+<% if $use_secure_client_port { -%>
+secureClientPort=<%= $secure_client_port %>
+<% } -%>
 initLimit=10
 autopurge.purgeInterval=24
 syncLimit=5

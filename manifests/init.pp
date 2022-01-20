@@ -69,6 +69,30 @@
 #
 #  The hash must be structured like { 'fqdn.example.com' => { 'id' => 1 },... }
 #
+# @param zookeeper_client_port
+#   When clustering Nifi, this port is used by NiFi clustering and state
+#   management. This is used for unencrypted communication between NiFi
+#   zookeeper client and the embedded zookeeper server.
+#
+#   Depending on the module parameter `zookeeper_use_secure_client_port`,
+#   NiFi will use either this port or the port controlled by the parameter
+#   `zookeeper_secure_client_port`.
+#
+# @param zookeeper_secure_client_port
+#   When clustering Nifi, this port is used by NiFi clustering and state
+#   management. This is used for encrypted communication between NiFi
+#   zookeeper client and the embedded zookeeper server.
+#
+#   Depending on the module parameter `zookeeper_use_secure_client_port`,
+#   NiFi will use either this port or the port controlled by the parameter
+#   `zookeeper_client_port`.
+#
+# @param zookeeper_use_secure_client_port
+#   Controls if the NiFi cluster will use TLS to connnect to the embedded zookeeper.
+#   If true, NiFi will use TLS and connect to the `zookeeper_secure_client_port`.
+#   If false, NiFi will use cleartext communication to connect to zookeeper on the
+#   `zookeeper_client_port`.
+#
 # @example Defaults
 #   include nifi
 #
@@ -109,6 +133,9 @@ class nifi (
     Stdlib::Fqdn, Struct[{id => Integer[1,255]}]
   ] $cluster_nodes = {},
   Optional[String] $initial_admin_identity = undef,
+  Stdlib::Port::Unprivileged $zookeeper_client_port = 2181,
+  Stdlib::Port::Unprivileged $zookeeper_secure_client_port = 2281,
+  Boolean $zookeeper_use_secure_client_port = true,
 ) {
 
   class { 'nifi::install':
@@ -126,15 +153,18 @@ class nifi (
   }
 
   class { 'nifi::config':
-    install_root     => $install_root,
-    user             => $user,
-    group            => $group,
-    config_directory => $config_directory,
-    var_directory    => $var_directory,
-    nifi_properties  => $nifi_properties,
-    version          => $version,
-    cluster          => $cluster,
-    cluster_nodes    => $cluster_nodes,
+    install_root                     => $install_root,
+    user                             => $user,
+    group                            => $group,
+    config_directory                 => $config_directory,
+    var_directory                    => $var_directory,
+    nifi_properties                  => $nifi_properties,
+    version                          => $version,
+    cluster                          => $cluster,
+    cluster_nodes                    => $cluster_nodes,
+    zookeeper_client_port            => $zookeeper_client_port,
+    zookeeper_secure_client_port     => $zookeeper_secure_client_port,
+    zookeeper_use_secure_client_port => $zookeeper_use_secure_client_port,
   }
 
   class {'nifi::service':

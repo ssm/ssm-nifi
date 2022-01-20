@@ -18,15 +18,23 @@ class nifi::config (
   Stdlib::Port::Unprivileged $cluster_node_protocol_port = 11443,
   Optional[String] $initial_admin_identity = undef,
   Hash[String,Nifi::Property] $nifi_properties = {},
+  Stdlib::Port::Unprivileged $zookeeper_client_port = 2181,
+  Stdlib::Port::Unprivileged $zookeeper_secure_client_port = 2281,
+  Boolean $zookeeper_use_secure_client_port = true,
 ) {
 
   $software_directory = "${install_root}/nifi-${version}"
   $nifi_properties_file = "${software_directory}/conf/nifi.properties"
 
-  $zookeeper_client_port = 2181
+  $zookeeper_connection_string_port = $zookeeper_use_secure_client_port ? {
+    true  => $zookeeper_secure_client_port,
+    false => $zookeeper_client_port,
+  }
+
   $zookeeper_state_directory = "${var_directory}/state/zookeeper"
+
   $zookeeper_connect_string = $cluster_nodes.map |$key, $value| {
-    "${key}:${zookeeper_client_port}"
+    "${key}:${zookeeper_connection_string_port}"
   }.sort.join(',')
 
   $cluster_properties = {
@@ -108,6 +116,9 @@ class nifi::config (
   $zookeeper_properties = {
     'state_directory' => $zookeeper_state_directory,
     'cluster_nodes' => $cluster_nodes,
+    'client_port' => $zookeeper_client_port,
+    'secure_client_port' => $zookeeper_secure_client_port,
+    'use_secure_client_port' => $zookeeper_use_secure_client_port,
   }
 
   file { "${var_directory}/state":

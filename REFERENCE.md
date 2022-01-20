@@ -16,6 +16,10 @@
 * `nifi::install`: Install Apache NiFi
 * `nifi::service`: Manage the Apache NiFi service
 
+### Data types
+
+* [`Nifi::Property`](#nifiproperty)
+
 ## Classes
 
 ### <a name="nifi"></a>`nifi`
@@ -200,7 +204,7 @@ Default value: `'/opt/nifi/config'`
 
 ##### <a name="nifi_properties"></a>`nifi_properties`
 
-Data type: `Hash[String,Variant[String,Integer,Boolean]]`
+Data type: `Hash[String,Nifi::Property]`
 
 Hash of parameter key/values to be added to conf/nifi.properties.
 
@@ -273,4 +277,16 @@ Data type: `Optional[String]`
 
 
 Default value: ``undef``
+
+## Data types
+
+### <a name="nifiproperty"></a>`Nifi::Property`
+
+The Nifi::Property data type.
+
+Alias of
+
+```puppet
+Variant[Boolean, Integer, String, Sensitive[String]]
+```
 

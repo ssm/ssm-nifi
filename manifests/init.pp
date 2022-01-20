@@ -52,7 +52,8 @@
 #
 # @param config_directory
 #   Directory for NiFi version independent configuration files to be kept
-#   across NiFi version upgrades. This is used in addition to the "./conf"
+#   across NiFi version upgrades. NiFi will also write generated configuration
+#   files to this directory. This is used in addition to the "./conf"
 #   directory within each NiFi installation.
 #
 # @param nifi_properties

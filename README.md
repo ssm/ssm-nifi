@@ -241,7 +241,8 @@ To create a cluster, set the `cluster` class parameter to true, and add cluster
 members to the `cluster_nodes` hash. This configures the cluster to use
 zookeeper for shared state.
 
-Nifi requires you to set a `nifi.sensitive.props.key` on all cluster nodes.
+Nifi requires you to set `nifi.sensitive.props.key` to the same string on all
+cluster nodes.
 
 If you cluster nifi and also override the `authorizers.xml` file, ensure you
 also include the cluster nodes in this file.

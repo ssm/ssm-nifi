@@ -185,14 +185,17 @@ class { 'nifi':
 
 ### Example: Configuring TLS
 
-NiFi can use TLS for traffic encryption as well as authentication. Providing
-the TLS certificate and key is outside the scope of this module.
+NiFi will generate a self-signed TLS certificate by default.
 
-This example assumes you have certificates and keys stored under /etc/pki/tls,
-and use the system CA trust store.
+To use a trusted TLS certificate is outside the scope of this module, a good
+place for it is in a "profile" wrapping the nifi module with other bits and
+pieces.
 
-Add the `puppetlabs-java_ks` module to your environment to manage the Java
-keystore used by NiFi.
+This example is based on the PKI configuration paths on the Red Hat OS family.
+It assumes you have certificates and keys stored under `/etc/pki/tls`, and use
+the system CA trust store under `/etc/pki/ca-trust`.
+
+The `puppetlabs-java_ks` is used to manage the Java keystore file used by NiFi.
 
 ```puppet
 class profile::nifi (
@@ -203,26 +206,29 @@ class profile::nifi (
   $hostcert    = "/etc/pki/tls/certs/${hostname}.pem"
   $hostprivkey = "/etc/pki/tls/private/${hostname}.pem"
 
-  class { 'java': }
+  class { 'java':
+    package => 'java-11-openjdk-headless',
+    before  => Class['nifi::service'],
+  }
 
   class { 'nifi':
     nifi_properties => {
 
       # Web properties
-      'nifi.web.https.host'             => $hostname,
+      'nifi.web.https.host'            => $hostname,
 
       # TLS properties
-      'nifi.security.keystore'          => '/opt/nifi/config/kesystore.jks',
-      'nifi.security.keystoreType'      => 'jks',
-      'nifi.security.keystorePasswd'    => $keystorepassword,
+      # - Key store generated in this profile
+      'nifi.security.keystore'         => '/opt/nifi/config/kesystore.jks',
+      'nifi.security.keystoreType'     => 'jks',
+      'nifi.security.keystorePasswd'   => $keystorepassword,
 
-      'nifi.security.truststore'        => '/etc/pki/ca-trust/extracted/java/cacerts',
-      'nifi.security.truststoreType'    => 'jks',
-      'nifi.security.truststorePasswd'  => '',
+      # - Default system trust store path and password for Java on Red Hat
+      'nifi.security.truststore'       => '/etc/pki/ca-trust/extracted/java/cacerts',
+      'nifi.security.truststoreType'   => 'jks',
+      'nifi.security.truststorePasswd' => 'changeit',
     }
   }
-
-  Package['java'] -> Service['nifi.service']
 
   java_ks { "${hostname}:/opt/nifi/config/keystore.jks":
     ensure      => latest,
@@ -258,7 +264,11 @@ Or continue without TLS:
 
 ```puppet
 class profile::nifi {
-  class { 'java': }
+  class { 'java':
+    package => 'java-11-openjdk-headless',
+    before  => Class['nifi::service']
+  }
+
   class { 'nifi':
     cluster         => true,
     nifi_properties => {
@@ -270,14 +280,12 @@ class profile::nifi {
       'node3.example.com' => { 'id' => 3 },
     }
   }
-
-  Class['java'] -> Class['nifi::service']
 }
 ```
 
-In addition to the clustering parameters you need to [add TLS
-certificates](#example-configuring-tls) from a trusted Certificate Authority
-for cluster communication.
+In addition to the clustering parameters, add certificates using the [TLS
+example in this readme](#example-configuring-tls) from a trusted Certificate
+Authority for cluster communication.
 
 ### NiFi user authentication
 

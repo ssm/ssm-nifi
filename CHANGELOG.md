@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `zookeeper_*` class parameters for configuring NiFi to zookeeper
-  connections when clustering NiFi.
+- Add `zookeeper_*` class parameters. These are used for clustering NiFi using
+  the embedded zookeeper.
 
 ### Changed
 

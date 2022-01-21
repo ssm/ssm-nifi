@@ -32,6 +32,22 @@ describe 'nifi' do
 
         it { is_expected.to compile }
       end
+
+      context 'with a zookeeper connection string' do
+        let(:params) do
+          {
+            cluster: true,
+            cluster_nodes: {
+              'node1.example.com': { id: 1 },
+              'node2.example.com': { id: 2 },
+              'node3.example.com': { id: 3 },
+            },
+            zookeeper_connect_string: 'localhost:2181',
+          }
+        end
+
+        it { is_expected.to compile }
+      end
     end
   end
 end

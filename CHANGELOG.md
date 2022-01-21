@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [unreleased]
+## [0.8.0] - 2020-01-21
 
 ### Added
 
@@ -132,7 +132,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release.
 - Download, install and start Apache NiFi.
 
-[unreleased]: https://github.com/ssm/ssm-nifi/compare/0.7.2...main
+[unreleased]: https://github.com/ssm/ssm-nifi/compare/0.8.0...main
+[0.8.0]: https://github.com/ssm/ssm-nifi/releases/tag/0.8.0
 [0.7.2]: https://github.com/ssm/ssm-nifi/releases/tag/0.7.2
 [0.7.1]: https://github.com/ssm/ssm-nifi/releases/tag/0.7.1
 [0.7.0]: https://github.com/ssm/ssm-nifi/releases/tag/0.7.0

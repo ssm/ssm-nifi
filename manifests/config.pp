@@ -21,6 +21,7 @@ class nifi::config (
   Stdlib::Port::Unprivileged $zookeeper_client_port = 2181,
   Stdlib::Port::Unprivileged $zookeeper_secure_client_port = 2281,
   Boolean $zookeeper_use_secure_client_port = true,
+  Optional[String] $zookeeper_connect_string = undef,
 ) {
 
   $software_directory = "${install_root}/nifi-${version}"
@@ -33,9 +34,14 @@ class nifi::config (
 
   $zookeeper_state_directory = "${var_directory}/state/zookeeper"
 
-  $zookeeper_connect_string = $cluster_nodes.map |$key, $value| {
-    "${key}:${zookeeper_connection_string_port}"
-  }.sort.join(',')
+  if $zookeeper_connect_string {
+    $_zookeeper_connect_string = $zookeeper_connect_string
+  }
+  else {
+    $_zookeeper_connect_string = $cluster_nodes.map |$key, $value| {
+      "${key}:${zookeeper_connection_string_port}"
+    }.sort.join(',')
+  }
 
   $cluster_properties = {
     'nifi.cluster.protocol.is.secure'                     => 'true',
@@ -43,7 +49,7 @@ class nifi::config (
     'nifi.cluster.node.address'                           => $cluster_node_address,
     'nifi.cluster.node.protocol.port'                     => $cluster_node_protocol_port,
 
-    'nifi.zookeeper.connect.string'                       => $zookeeper_connect_string,
+    'nifi.zookeeper.connect.string'                       => $_zookeeper_connect_string,
     'nifi.state.management.embedded.zookeeper.start'      => 'true',
     'nifi.state.management.embedded.zookeeper.properties' => "${config_directory}/zookeeper.properties",
     'nifi.state.management.provider.cluster'              => 'zk-provider'
@@ -102,7 +108,7 @@ class nifi::config (
 
   $state_management_properties = {
     'local_directory' => "${var_directory}/state/local",
-    'zookeeper_connect_string' => $zookeeper_connect_string,
+    'zookeeper_connect_string' => $_zookeeper_connect_string,
   }
 
   file { "${config_directory}/state-management.xml":

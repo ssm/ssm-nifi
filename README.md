@@ -242,6 +242,10 @@ class profile::nifi (
 
 ### Clustering NiFi
 
+Warning: Using this module for nifi clusters is not yet stable. Configuration
+file overrides is currently required, and your NiFi configuration may break on
+upgrades of this module.
+
 To create a cluster, set the `cluster` class parameter to true, and add cluster
 members to the `cluster_nodes` hash. This configures the cluster to use
 zookeeper for shared state.

@@ -49,6 +49,8 @@ class nifi::config (
     'nifi.cluster.node.address'                           => $cluster_node_address,
     'nifi.cluster.node.protocol.port'                     => $cluster_node_protocol_port,
 
+    'nifi.authorizer.configuration.file'                  => "${config_directory}/authorizers.xml",
+
     'nifi.zookeeper.connect.string'                       => $_zookeeper_connect_string,
     'nifi.state.management.embedded.zookeeper.start'      => 'true',
     'nifi.state.management.embedded.zookeeper.properties' => "${config_directory}/zookeeper.properties",

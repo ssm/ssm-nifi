@@ -120,9 +120,9 @@
 #   }
 #
 class nifi (
-  String $version = '1.15.3',
+  String $version = '1.16.0',
   String $download_url = "https://dlcdn.apache.org/nifi/${version}/nifi-${version}-bin.tar.gz",
-  String $download_checksum = 'c77fe8e4bc534f16fd5482832285e0bde07495308f31fd6d0fbb3118042daed4',
+  String $download_checksum = '044f7dd26552a1c3be52e31af6450b25c6d76ea897f28aae6504d029244f7b88',
   String $download_checksum_type = 'sha256',
   Stdlib::Absolutepath $download_tmp_dir = '/var/tmp',
   String $user = 'nifi',

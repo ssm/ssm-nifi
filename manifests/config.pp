@@ -52,7 +52,7 @@ class nifi::config (
     'nifi.zookeeper.connect.string'                       => $_zookeeper_connect_string,
     'nifi.state.management.embedded.zookeeper.start'      => 'true',
     'nifi.state.management.embedded.zookeeper.properties' => "${config_directory}/zookeeper.properties",
-    'nifi.state.management.provider.cluster'              => 'zk-provider'
+    'nifi.state.management.provider.cluster'              => 'zk-provider',
   }
 
   $standalone_properties = {

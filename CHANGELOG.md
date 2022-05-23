@@ -10,13 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Install NiFi version 1.16.1 by default
+- Declare support for Red Hat Enterprise Linux 9
+- Declare support for Ubuntu 22.04 LTS (Jammy Jellyfish)
 
 ### Fixed
 
-- When parameter `cluster` is set to true, ensure that the nifi property
-  `nifi.authorizer.configuration.file` points to the configuration file
-  installed by this module to authorize cluster nodes.
-  (Note: See README / Limitations about clustering and authentication)
+- Cluster: When parameter `cluster` is set to true, ensure that the nifi
+  property `nifi.authorizer.configuration.file` points to the configuration
+  file installed by this module to authorize cluster nodes. (Note: See
+  README / Limitations about clustering and authentication)
 
 ## [0.8.0] - 2020-01-21
 

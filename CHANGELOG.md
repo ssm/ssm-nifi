@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [unreleased]
+
+### Changed
+
+- Install NiFi version 1.16.1 by default
+
+### Fixed
+
+- When parameter `cluster` is set to true, ensure that the nifi property
+  `nifi.authorizer.configuration.file` points to the configuration file
+  installed by this module to authorize cluster nodes.
+  (Note: See README / Limitations about clustering and authentication)
+
 ## [0.8.0] - 2020-01-21
 
 ### Added

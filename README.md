@@ -456,9 +456,10 @@ State management: This module configures rudimentary NiFi state management for
 local state and with zookeeper for cluster state. The `redis` method is not
 managed with this module.
 
-Cluster: Management of a NiFi cluster with this module is not settled yet.
-Enabling clustering with `cluster => true` will break the default, built-in
-single-user authorization.
+Cluster configuration breaks authorization: Enabling clustering with this
+module using `cluster => true` will break the default user authorization. You
+will have to override this file to add your preferred method. See examples
+above.
 
 To manage more configuration files, add a file resource of your own, and set
 the related property using the `nifi_properties` class parameter.

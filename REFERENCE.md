@@ -79,11 +79,11 @@ The following parameters are available in the `nifi` class:
 * [`nifi_properties`](#nifi_properties)
 * [`cluster`](#cluster)
 * [`cluster_nodes`](#cluster_nodes)
+* [`initial_admin_identity`](#initial_admin_identity)
 * [`zookeeper_connect_string`](#zookeeper_connect_string)
 * [`zookeeper_client_port`](#zookeeper_client_port)
 * [`zookeeper_secure_client_port`](#zookeeper_secure_client_port)
 * [`zookeeper_use_secure_client_port`](#zookeeper_use_secure_client_port)
-* [`initial_admin_identity`](#initial_admin_identity)
 
 ##### <a name="version"></a>`version`
 
@@ -93,7 +93,7 @@ The version of Apache NiFi. This must match the version in the
 tarball. This is used for managing files, directories and paths in
 the service.
 
-Default value: `'1.15.3'`
+Default value: `'1.17.0'`
 
 ##### <a name="user"></a>`user`
 
@@ -128,7 +128,7 @@ Data type: `String`
 The expected checksum of the downloaded tarball. This is used for
 verifying the integrity of the downloaded tarball.
 
-Default value: `'c77fe8e4bc534f16fd5482832285e0bde07495308f31fd6d0fbb3118042daed4'`
+Default value: `'176eb0925493ce61eb3d8c3c0dcfa029a546b0014aeea731749823cbc069ecff'`
 
 ##### <a name="download_checksum_type"></a>`download_checksum_type`
 
@@ -225,13 +225,23 @@ Default value: ``false``
 ##### <a name="cluster_nodes"></a>`cluster_nodes`
 
 Data type: `Hash[
-    Stdlib::Fqdn, Struct[{id => Integer[1,255]}]
+    Stdlib::Fqdn, Struct[{ id => Integer[1,255] }]
   ]`
 
 A hash of zookeeper cluster nodes and their ID. The ID must be an integer
 between 1 and 255, unique in the cluster, and must not be changed once set.
 
 Default value: `{}`
+
+##### <a name="initial_admin_identity"></a>`initial_admin_identity`
+
+Data type: `Optional[String]`
+
+The initial admin identity used in the authorizers.xml file by NiFi for
+policies when creating the flow.xml file. This is useful when connecting
+NiFi to an external authentication source.
+
+Default value: ``undef``
 
 ##### <a name="zookeeper_connect_string"></a>`zookeeper_connect_string`
 
@@ -281,14 +291,6 @@ If false, NiFi will use cleartext communication to connect to zookeeper on the
 `zookeeper_client_port`.
 
 Default value: ``true``
-
-##### <a name="initial_admin_identity"></a>`initial_admin_identity`
-
-Data type: `Optional[String]`
-
-
-
-Default value: ``undef``
 
 ## Data types
 

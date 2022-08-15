@@ -16,7 +16,6 @@ class nifi::install (
   String $user,
   String $group,
 ) {
-
   $local_tarball = "${download_tmp_dir}/nifi-${version}.tar.gz"
   $software_directory = "${install_root}/nifi-${version}"
 

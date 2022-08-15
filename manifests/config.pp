@@ -12,7 +12,7 @@ class nifi::config (
   String $version,
   Boolean $cluster = false,
   Hash[
-    Stdlib::Fqdn, Struct[{id => Integer[1,255]}]
+    Stdlib::Fqdn, Struct[{ id => Integer[1,255] }]
   ] $cluster_nodes = {},
   Stdlib::Fqdn $cluster_node_address = $trusted['certname'],
   Stdlib::Port::Unprivileged $cluster_node_protocol_port = 11443,
@@ -23,7 +23,6 @@ class nifi::config (
   Boolean $zookeeper_use_secure_client_port = true,
   Optional[String] $zookeeper_connect_string = undef,
 ) {
-
   $software_directory = "${install_root}/nifi-${version}"
   $nifi_properties_file = "${software_directory}/conf/nifi.properties"
 
@@ -63,7 +62,7 @@ class nifi::config (
     'nifi.cluster.node.protocol.port' => '',
     'nifi.zookeeper.connect_string' => '',
     'nifi.state.management.embedded.zookeeper.start' => 'false',
-    'nifi.state.management.provider.local' => 'local-provider'
+    'nifi.state.management.provider.local' => 'local-provider',
   }
 
   $path_properties = {
@@ -94,7 +93,7 @@ class nifi::config (
   }
 
   $authorizers_properties = {
-    'cluster' =>  $cluster,
+    'cluster' => $cluster,
     'cluster_nodes' => $cluster_nodes,
     'config_directory' => $config_directory,
     'initial_admin_identity' => $initial_admin_identity,

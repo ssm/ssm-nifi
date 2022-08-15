@@ -136,7 +136,7 @@ class nifi (
   Stdlib::Absolutepath $config_directory = '/opt/nifi/config',
   Boolean $cluster = false,
   Hash[
-    Stdlib::Fqdn, Struct[{id => Integer[1,255]}]
+    Stdlib::Fqdn, Struct[{ id => Integer[1,255] }]
   ] $cluster_nodes = {},
   Optional[String] $initial_admin_identity = undef,
   Stdlib::Port::Unprivileged $zookeeper_client_port = 2181,
@@ -144,7 +144,6 @@ class nifi (
   Boolean $zookeeper_use_secure_client_port = true,
   Optional[String] $zookeeper_connect_string = undef,
 ) {
-
   class { 'nifi::install':
     install_root           => $install_root,
     version                => $version,
@@ -175,7 +174,7 @@ class nifi (
     zookeeper_connect_string         => $zookeeper_connect_string,
   }
 
-  class {'nifi::service':
+  class { 'nifi::service':
     install_root  => $install_root,
     version       => $version,
     user          => $user,

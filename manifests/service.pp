@@ -11,7 +11,6 @@ class nifi::service (
   Integer[0] $limit_nproc,
   Stdlib::Absolutepath $log_directory = '/var/log/nifi',
 ) {
-
   $service_params = {
     'nifi_home'     => "${install_root}/nifi-${version}",
     'user'          => $user,

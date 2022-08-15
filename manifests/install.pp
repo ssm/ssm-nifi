@@ -15,8 +15,9 @@ class nifi::install (
   Stdlib::Absolutepath $config_directory,
   String $user,
   String $group,
+  Enum['zip','tar.gz'] $download_archive_type = 'zip',
 ) {
-  $local_tarball = "${download_tmp_dir}/nifi-${version}.tar.gz"
+  $local_archive_file = "${download_tmp_dir}/nifi-${version}.${download_archive_type}"
   $software_directory = "${install_root}/nifi-${version}"
 
   $default_directory_parameters = {
@@ -26,7 +27,7 @@ class nifi::install (
     mode   => '0750',
   }
 
-  archive { $local_tarball:
+  archive { $local_archive_file:
     source        => $download_url,
     checksum      => $download_checksum,
     checksum_type => $download_checksum_type,

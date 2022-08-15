@@ -67,6 +67,7 @@ The following parameters are available in the `nifi` class:
 * [`user`](#user)
 * [`group`](#group)
 * [`download_url`](#download_url)
+* [`download_archive_type`](#download_archive_type)
 * [`download_checksum`](#download_checksum)
 * [`download_checksum_type`](#download_checksum_type)
 * [`download_tmp_dir`](#download_tmp_dir)
@@ -119,7 +120,15 @@ Data type: `String`
 
 Where to download the binary installation tarball from.
 
-Default value: `"https://dlcdn.apache.org/nifi/${version}/nifi-${version}-bin.tar.gz"`
+Default value: `"https://dlcdn.apache.org/nifi/${version}/nifi-${version}-bin.${download_archive_type}"`
+
+##### <a name="download_archive_type"></a>`download_archive_type`
+
+Data type: `Enum['zip', 'tar.gz']`
+
+The archive type of the downloaded tarball.
+
+Default value: `'zip'`
 
 ##### <a name="download_checksum"></a>`download_checksum`
 

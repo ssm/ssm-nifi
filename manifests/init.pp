@@ -18,6 +18,9 @@
 # @param download_url
 #   Where to download the binary installation tarball from.
 #
+# @param download_archive_type
+#   The archive type of the downloaded tarball.
+#
 # @param download_checksum
 #   The expected checksum of the downloaded tarball. This is used for
 #   verifying the integrity of the downloaded tarball.
@@ -126,7 +129,8 @@
 #
 class nifi (
   String $version = '1.17.0',
-  String $download_url = "https://dlcdn.apache.org/nifi/${version}/nifi-${version}-bin.tar.gz",
+  Enum['zip', 'tar.gz'] $download_archive_type = 'zip',
+  String $download_url = "https://dlcdn.apache.org/nifi/${version}/nifi-${version}-bin.${download_archive_type}",
   String $download_checksum = '176eb0925493ce61eb3d8c3c0dcfa029a546b0014aeea731749823cbc069ecff',
   String $download_checksum_type = 'sha256',
   Stdlib::Absolutepath $download_tmp_dir = '/var/tmp',
@@ -154,6 +158,7 @@ class nifi (
     version                => $version,
     user                   => $user,
     group                  => $group,
+    download_archive_type  => $download_archive_type,
     download_url           => $download_url,
     download_checksum      => $download_checksum,
     download_checksum_type => $download_checksum_type,

@@ -9,7 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Install NiFi version 1.16.1 by default
+- Install NiFi version 1.17.0 by default.
+- This module now downloads NiFi as a "zip" archive instead of "tar.gz", and
+  requires the "unzip" package to be present.
 - Declare support for Red Hat Enterprise Linux 9
 - Declare support for Ubuntu 22.04 LTS (Jammy Jellyfish)
 

@@ -4,7 +4,10 @@ pp_defaults = <<-PUPPETCODE
   class { 'java': }
   class { 'nifi': }
 
+  package { 'unzip': }
+
   Package['java'] -> Service['nifi.service']
+  Package['unzip'] -> Class['nifi::install']
 PUPPETCODE
 
 describe 'Apache NiFi' do

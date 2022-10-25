@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [unreleased]
 
-### Changed
+### [0.10.0] - 2022-10-25
 
 - Install NiFi version 1.18.0 by default.
 

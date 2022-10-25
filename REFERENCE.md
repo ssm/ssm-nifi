@@ -94,7 +94,7 @@ The version of Apache NiFi. This must match the version in the
 tarball. This is used for managing files, directories and paths in
 the service.
 
-Default value: `'1.17.0'`
+Default value: `'1.18.0'`
 
 ##### <a name="user"></a>`user`
 
@@ -137,7 +137,7 @@ Data type: `String`
 The expected checksum of the downloaded tarball. This is used for
 verifying the integrity of the downloaded tarball.
 
-Default value: `'176eb0925493ce61eb3d8c3c0dcfa029a546b0014aeea731749823cbc069ecff'`
+Default value: `'f8eaf0b805e3094682da668f1097ccd98deec35240c677c2089cb486d69f0b64'`
 
 ##### <a name="download_checksum_type"></a>`download_checksum_type`
 

@@ -18,7 +18,7 @@
 
 ### Data types
 
-* [`Nifi::Property`](#nifiproperty)
+* [`Nifi::Property`](#Nifi--Property)
 
 ## Classes
 
@@ -63,30 +63,30 @@ class { 'nifi':
 
 The following parameters are available in the `nifi` class:
 
-* [`version`](#version)
-* [`user`](#user)
-* [`group`](#group)
-* [`download_url`](#download_url)
-* [`download_archive_type`](#download_archive_type)
-* [`download_checksum`](#download_checksum)
-* [`download_checksum_type`](#download_checksum_type)
-* [`download_tmp_dir`](#download_tmp_dir)
-* [`service_limit_nofile`](#service_limit_nofile)
-* [`service_limit_nproc`](#service_limit_nproc)
-* [`install_root`](#install_root)
-* [`var_directory`](#var_directory)
-* [`log_directory`](#log_directory)
-* [`config_directory`](#config_directory)
-* [`nifi_properties`](#nifi_properties)
-* [`cluster`](#cluster)
-* [`cluster_nodes`](#cluster_nodes)
-* [`initial_admin_identity`](#initial_admin_identity)
-* [`zookeeper_connect_string`](#zookeeper_connect_string)
-* [`zookeeper_client_port`](#zookeeper_client_port)
-* [`zookeeper_secure_client_port`](#zookeeper_secure_client_port)
-* [`zookeeper_use_secure_client_port`](#zookeeper_use_secure_client_port)
+* [`version`](#-nifi--version)
+* [`user`](#-nifi--user)
+* [`group`](#-nifi--group)
+* [`download_url`](#-nifi--download_url)
+* [`download_archive_type`](#-nifi--download_archive_type)
+* [`download_checksum`](#-nifi--download_checksum)
+* [`download_checksum_type`](#-nifi--download_checksum_type)
+* [`download_tmp_dir`](#-nifi--download_tmp_dir)
+* [`service_limit_nofile`](#-nifi--service_limit_nofile)
+* [`service_limit_nproc`](#-nifi--service_limit_nproc)
+* [`install_root`](#-nifi--install_root)
+* [`var_directory`](#-nifi--var_directory)
+* [`log_directory`](#-nifi--log_directory)
+* [`config_directory`](#-nifi--config_directory)
+* [`nifi_properties`](#-nifi--nifi_properties)
+* [`cluster`](#-nifi--cluster)
+* [`cluster_nodes`](#-nifi--cluster_nodes)
+* [`initial_admin_identity`](#-nifi--initial_admin_identity)
+* [`zookeeper_connect_string`](#-nifi--zookeeper_connect_string)
+* [`zookeeper_client_port`](#-nifi--zookeeper_client_port)
+* [`zookeeper_secure_client_port`](#-nifi--zookeeper_secure_client_port)
+* [`zookeeper_use_secure_client_port`](#-nifi--zookeeper_use_secure_client_port)
 
-##### <a name="version"></a>`version`
+##### <a name="-nifi--version"></a>`version`
 
 Data type: `String`
 
@@ -96,7 +96,7 @@ the service.
 
 Default value: `'1.18.0'`
 
-##### <a name="user"></a>`user`
+##### <a name="-nifi--user"></a>`user`
 
 Data type: `String`
 
@@ -105,7 +105,7 @@ service.
 
 Default value: `'nifi'`
 
-##### <a name="group"></a>`group`
+##### <a name="-nifi--group"></a>`group`
 
 Data type: `String`
 
@@ -114,7 +114,7 @@ service.
 
 Default value: `'nifi'`
 
-##### <a name="download_url"></a>`download_url`
+##### <a name="-nifi--download_url"></a>`download_url`
 
 Data type: `String`
 
@@ -122,7 +122,7 @@ Where to download the binary installation tarball from.
 
 Default value: `"https://dlcdn.apache.org/nifi/${version}/nifi-${version}-bin.${download_archive_type}"`
 
-##### <a name="download_archive_type"></a>`download_archive_type`
+##### <a name="-nifi--download_archive_type"></a>`download_archive_type`
 
 Data type: `Enum['zip', 'tar.gz']`
 
@@ -130,7 +130,7 @@ The archive type of the downloaded tarball.
 
 Default value: `'zip'`
 
-##### <a name="download_checksum"></a>`download_checksum`
+##### <a name="-nifi--download_checksum"></a>`download_checksum`
 
 Data type: `String`
 
@@ -139,7 +139,7 @@ verifying the integrity of the downloaded tarball.
 
 Default value: `'f8eaf0b805e3094682da668f1097ccd98deec35240c677c2089cb486d69f0b64'`
 
-##### <a name="download_checksum_type"></a>`download_checksum_type`
+##### <a name="-nifi--download_checksum_type"></a>`download_checksum_type`
 
 Data type: `String`
 
@@ -148,7 +148,7 @@ verifying the integrity of the downloaded tarball.
 
 Default value: `'sha256'`
 
-##### <a name="download_tmp_dir"></a>`download_tmp_dir`
+##### <a name="-nifi--download_tmp_dir"></a>`download_tmp_dir`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -156,7 +156,7 @@ Temporary directory for downloading the tarball.
 
 Default value: `'/var/tmp'`
 
-##### <a name="service_limit_nofile"></a>`service_limit_nofile`
+##### <a name="-nifi--service_limit_nofile"></a>`service_limit_nofile`
 
 Data type: `Integer`
 
@@ -165,7 +165,7 @@ for LimitNOFILE= in nifi.service.
 
 Default value: `50000`
 
-##### <a name="service_limit_nproc"></a>`service_limit_nproc`
+##### <a name="-nifi--service_limit_nproc"></a>`service_limit_nproc`
 
 Data type: `Integer`
 
@@ -174,7 +174,7 @@ for LimitNPROC= in nifi.service.
 
 Default value: `10000`
 
-##### <a name="install_root"></a>`install_root`
+##### <a name="-nifi--install_root"></a>`install_root`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -182,7 +182,7 @@ The root directory of the nifi installation.
 
 Default value: `'/opt/nifi'`
 
-##### <a name="var_directory"></a>`var_directory`
+##### <a name="-nifi--var_directory"></a>`var_directory`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -192,7 +192,7 @@ properties for working directories and repositories.
 
 Default value: `'/var/opt/nifi'`
 
-##### <a name="log_directory"></a>`log_directory`
+##### <a name="-nifi--log_directory"></a>`log_directory`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -202,7 +202,7 @@ deletion.
 
 Default value: `'/var/log/nifi'`
 
-##### <a name="config_directory"></a>`config_directory`
+##### <a name="-nifi--config_directory"></a>`config_directory`
 
 Data type: `Stdlib::Absolutepath`
 
@@ -213,7 +213,7 @@ directory within each NiFi installation.
 
 Default value: `'/opt/nifi/config'`
 
-##### <a name="nifi_properties"></a>`nifi_properties`
+##### <a name="-nifi--nifi_properties"></a>`nifi_properties`
 
 Data type: `Hash[String,Nifi::Property]`
 
@@ -221,7 +221,7 @@ Hash of parameter key/values to be added to conf/nifi.properties.
 
 Default value: `{}`
 
-##### <a name="cluster"></a>`cluster`
+##### <a name="-nifi--cluster"></a>`cluster`
 
 Data type: `Boolean`
 
@@ -229,20 +229,24 @@ If true, enables the built-in zookeeper cluster for shared configuration
 and state management. The cluster_nodes parameter is used to configure the
 zookeeper cluster, and nifi will connect to their local zookeper instance.
 
-Default value: ``false``
+Default value: `false`
 
-##### <a name="cluster_nodes"></a>`cluster_nodes`
+##### <a name="-nifi--cluster_nodes"></a>`cluster_nodes`
 
-Data type: `Hash[
+Data type:
+
+```puppet
+Hash[
     Stdlib::Fqdn, Struct[{ id => Integer[1,255] }]
-  ]`
+  ]
+```
 
 A hash of zookeeper cluster nodes and their ID. The ID must be an integer
 between 1 and 255, unique in the cluster, and must not be changed once set.
 
 Default value: `{}`
 
-##### <a name="initial_admin_identity"></a>`initial_admin_identity`
+##### <a name="-nifi--initial_admin_identity"></a>`initial_admin_identity`
 
 Data type: `Optional[String]`
 
@@ -250,9 +254,9 @@ The initial admin identity used in the authorizers.xml file by NiFi for
 policies when creating the flow.xml file. This is useful when connecting
 NiFi to an external authentication source.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="zookeeper_connect_string"></a>`zookeeper_connect_string`
+##### <a name="-nifi--zookeeper_connect_string"></a>`zookeeper_connect_string`
 
 Data type: `Optional[String]`
 
@@ -260,9 +264,9 @@ The zookeeper connect string is autogenerated from the `cluster_nodes` as
 well as the zookeeper client port parameteres. To override this, set the
 connecct string using this parameter.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### <a name="zookeeper_client_port"></a>`zookeeper_client_port`
+##### <a name="-nifi--zookeeper_client_port"></a>`zookeeper_client_port`
 
 Data type: `Stdlib::Port::Unprivileged`
 
@@ -276,7 +280,7 @@ NiFi will use either this port or the port controlled by the parameter
 
 Default value: `2181`
 
-##### <a name="zookeeper_secure_client_port"></a>`zookeeper_secure_client_port`
+##### <a name="-nifi--zookeeper_secure_client_port"></a>`zookeeper_secure_client_port`
 
 Data type: `Stdlib::Port::Unprivileged`
 
@@ -290,7 +294,7 @@ NiFi will use either this port or the port controlled by the parameter
 
 Default value: `2281`
 
-##### <a name="zookeeper_use_secure_client_port"></a>`zookeeper_use_secure_client_port`
+##### <a name="-nifi--zookeeper_use_secure_client_port"></a>`zookeeper_use_secure_client_port`
 
 Data type: `Boolean`
 
@@ -299,17 +303,13 @@ If true, NiFi will use TLS and connect to the `zookeeper_secure_client_port`.
 If false, NiFi will use cleartext communication to connect to zookeeper on the
 `zookeeper_client_port`.
 
-Default value: ``true``
+Default value: `true`
 
 ## Data types
 
-### <a name="nifiproperty"></a>`Nifi::Property`
+### <a name="Nifi--Property"></a>`Nifi::Property`
 
 The Nifi::Property data type.
 
-Alias of
-
-```puppet
-Variant[Boolean, Integer, String, Sensitive[String]]
-```
+Alias of `Variant[Boolean, Integer, String, Sensitive[String]]`
 
